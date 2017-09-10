@@ -1,8 +1,8 @@
 package splendid
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestConfig(t *testing.T) {
