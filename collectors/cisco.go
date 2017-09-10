@@ -1,8 +1,10 @@
-package collectors
+package splendid
 
-import "github.com/slarti5191/splendid"
+type Commands struct {
+	Commands map[string]string
+}
 
-func CollectCisco() (Cmds splendid.Commands) {
+func CiscoCmd() (Cmds *Commands) {
 	// set commands to their expected output (last line)
 	Cmds.Commands["set pager"] = ""
 	Cmds.Commands["show run"] = "#"

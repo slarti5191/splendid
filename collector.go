@@ -1,13 +1,11 @@
 package splendid
 
 
-type Commands struct {
-	Commands map[string]string
-}
+import "github.com/slarti5191/splendid/collectors"
+
 // RunCollector collects configs
 // Grab global configs as Conf, device specific commands as Cmd
-// Cmd should be set up under collectors/
-func RunCollector(Conf *SplendidConfig, Cmd *Commands) {
-	// iterate over commands, expect matching output, fail otherwise
+func RunCollector(Dev *DeviceConfig, Opts *SplendidConfig, Cmds *splendid.Commands) {
+	// iterate over Cmds, expect matching output, fail otherwise
 
 }
