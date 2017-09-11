@@ -1,8 +1,25 @@
 package splendid
 
-import "github.com/slarti5191/splendid/collectors"
+import (
+	"fmt"
+	"github.com/slarti5191/splendid/collectors"
+	"time"
+)
 
+// Two primary threads. Webserver and collectors.
 func Init() {
+	go threadWebserver()
+	threadCollectors()
+}
+
+func threadWebserver() {
+	for {
+		fmt.Println("> Webserver code on another branch.")
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func threadCollectors() {
 	// Get global configs
 	Conf := SetConfigs()
 	// Get device configs
@@ -12,6 +29,13 @@ func Init() {
 	// as type Commands based on DeviceConfig.Method
 	Cmds := collectors.CiscoCmd()
 
-	// Kick off a collector
-	RunCollector(Dev, Conf, Cmds)
+	// Main collector loop.
+	for {
+		fmt.Println("> Running Collector Loop")
+
+		// Kick off a collector
+		RunCollector(Dev, Conf, Cmds)
+
+		time.Sleep(5 * time.Second)
+	}
 }
