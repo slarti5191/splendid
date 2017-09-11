@@ -1,1 +1,1 @@
-package splendid
+package utils
