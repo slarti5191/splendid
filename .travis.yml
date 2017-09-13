@@ -9,6 +9,13 @@ go:
  - 1.9.x
  - master
 
+# Need dependencies.
+# Travis-CI says: Using Go 1.5 Vendoring, not checking for Godeps
+# Overriding that behavior for now.
+# Review: https://github.com/golang/go/wiki/PackageManagementTools
+install:
+ - go get -u -v $(go list -f '{{join .Imports "\n"}}{{"\n"}}{{join .TestImports "\n"}}' ./... | sort | uniq | grep -v splendid)
+
 script:
  - go test -v
 
