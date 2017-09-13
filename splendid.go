@@ -39,13 +39,28 @@ func threadCollectors() {
 	// as type Commands based on DeviceConfig.Method
 	Cmds := collectors.CiscoCmd()
 
+	// TODO: Move this into the master collector.
+	exampleCollector, err := collectors.MakeCollector("cisco")
+	if err != nil {
+		fmt.Println("Oh no, an error")
+	}
+
 	// Main collector loop.
 	for {
 		fmt.Println("> Running Collector Loop")
 
+		exampleCollector.Collect()
+
 		// Kick off a collector
-		RunCollector(Dev, Conf, Cmds)
+		runCollector(Dev, Conf, Cmds)
 
 		time.Sleep(5 * time.Second)
 	}
+}
+
+// RunCollector collects configs
+// Grab global configs as Conf, device specific commands as Cmd
+func runCollector(Dev DeviceConfig, Opts SplendidConfig, Cmds collectors.Commands) {
+	// iterate over Cmds, expect matching output, fail otherwise
+	fmt.Print(Dev, Opts, Cmds)
 }
