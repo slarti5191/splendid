@@ -5,11 +5,11 @@ type Commands struct {
 }
 
 func CiscoCmd() (Cmds Commands) {
-	// Set commands to their expected output (last line)
-	return Commands{
+	// set commands to their expected output (last line)
+	return Commands {
 		map[string]string{
 			"set pager": "",
-			"show run": "#",
+			"show run":  "#",
 		},
 	}
 }
