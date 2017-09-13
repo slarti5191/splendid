@@ -7,6 +7,8 @@ import (
 )
 
 // Two primary threads. Webserver and collectors.
+const version = "0.0.0"
+
 func Init() {
 	go threadWebserver()
 	threadCollectors()
@@ -21,9 +23,10 @@ func threadWebserver() {
 
 func threadCollectors() {
 	// Get global configs
-	Conf := SetConfigs()
+	Conf := *SetConfigs()
 	// Get device configs
 	Dev := DeviceConfig{}
+	
 	// Set up DeviceConfig
 	//Dev := new(DeviceConfig)
 	//Dev.Method = "cisco"

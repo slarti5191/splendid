@@ -1,8 +1,8 @@
 package splendid
 
 import (
-	"github.com/slarti5191/splendid/collectors"
 	"fmt"
+	"github.com/slarti5191/splendid/collectors"
 )
 
 // RunCollector collects configs
