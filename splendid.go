@@ -26,7 +26,7 @@ func threadCollectors() {
 	Conf := *SetConfigs()
 	// Get device configs
 	Dev := DeviceConfig{}
-	
+
 	// Set up DeviceConfig
 	//Dev := new(DeviceConfig)
 	//Dev.Method = "cisco"
