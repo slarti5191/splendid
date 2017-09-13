@@ -17,5 +17,6 @@ install:
  - go get -u -v $(go list -f '{{join .Imports "\n"}}{{"\n"}}{{join .TestImports "\n"}}' ./... | sort | uniq | grep -v splendid)
 
 script:
- - go test -v
+# Run all tests (including subfolders.)
+ - go test -v ./...
 
