@@ -23,9 +23,9 @@ func threadWebserver() {
 
 func threadCollectors() {
 	// Get global configs
-	Conf := *SetConfigs()
+	//Conf := *SetConfigs()
 	// Get device configs
-	Dev := DeviceConfig{}
+	//Dev := DeviceConfig{}
 
 	// Set up DeviceConfig
 	//Dev := new(DeviceConfig)
@@ -35,12 +35,8 @@ func threadCollectors() {
 	// Kick off a collector
 	//RunCollector(Dev, Conf, Cmds)
 
-	// Need to come up with a way to set up 'Cmds'
-	// as type Commands based on DeviceConfig.Method
-	Cmds := collectors.CiscoCmd()
-
 	// TODO: Move this into the master collector.
-	exampleCollector, err := collectors.MakeCollector("cisco")
+	exampleCollector, err := collectors.MakeCollector("pfsense")
 	if err != nil {
 		fmt.Println("Oh no, an error")
 	}
@@ -49,10 +45,11 @@ func threadCollectors() {
 	for {
 		fmt.Println("> Running Collector Loop")
 
-		exampleCollector.Collect()
+		result := exampleCollector.Collect()
+		fmt.Println(result)
 
 		// Kick off a collector
-		runCollector(Dev, Conf, Cmds)
+		//runCollector(Dev, Conf)
 
 		time.Sleep(5 * time.Second)
 	}
@@ -60,7 +57,7 @@ func threadCollectors() {
 
 // RunCollector collects configs
 // Grab global configs as Conf, device specific commands as Cmd
-func runCollector(Dev DeviceConfig, Opts SplendidConfig, Cmds collectors.Commands) {
+func runCollector(Dev DeviceConfig, Opts SplendidConfig) {
 	// iterate over Cmds, expect matching output, fail otherwise
-	fmt.Print(Dev, Opts, Cmds)
+	fmt.Print(Dev, Opts)
 }

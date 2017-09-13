@@ -6,7 +6,7 @@ import "errors"
 // Ultimately, the core routine only cares to run collect on each collector.
 // It doesn't need to know anything else about the inner implementation.
 type Collector interface {
-	Collect()
+	Collect() string
 }
 
 // MakeCollector will generate the appropriate collector based on the
@@ -14,7 +14,9 @@ type Collector interface {
 func MakeCollector(m string) (Collector, error) {
 	switch m {
 	case "cisco":
-		return MakeCisco(), nil
+		return makeCisco(), nil
+	case "pfsense":
+		return makePfsense(), nil
 	default:
 		return nil, errors.New("unrecognized collector type")
 	}
