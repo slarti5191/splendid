@@ -4,9 +4,11 @@ import (
 	"github.com/slarti5191/splendid/collectors"
 )
 
+const version = "0.0.0"
+
 func Init() {
 	// Get global configs
-	Conf := SetConfigs()
+	Conf := *SetConfigs()
 	// Set up DeviceConfig
 	Dev := new(DeviceConfig)
 	Dev.Method = "cisco"
