@@ -1,46 +1,13 @@
-package splendid
+package configuration
 
 import (
 	"flag"
 	"time"
 )
 
-type DeviceConfig struct {
-	Hostname       string
-	Method         string
-	Target         string
-	Timeout        time.Duration
-	CommandTimeout time.Duration
-	Config         map[string]string
-}
-
-type SplendidConfig struct {
-	Interval      time.Duration
-	Timeout       time.Duration
-	GitPush       bool
-	Insecure      bool
-	Concurrency   int
-	HttpListen    string
-	HttpEnabled   bool
-	SmtpString    string
-	Workspace     string
-	ExecutableDir string
-	ToEmail       string
-	FromEmail     string
-	UseSyslog     bool
-	DefaultUser   string
-	DefaultPass   string
-	DefaultMethod string
-	CmwPass       string
-	Devices       []DeviceConfig
-	ConfigFile    string
-}
-
-// setConfigs parses splendid.conf
-func SetConfigs() (*SplendidConfig, error) {
-	// set up config defaults
-	Conf := new(SplendidConfig)
-	//parse cli flags
+// parseConfigFlags overwrites configuration with set flags
+func parseConfigFlags(Conf *SplendidConfig) (*SplendidConfig, error) {
+	// TODO: This should only happen if the flag has been passed
 	flag.StringVar(&Conf.Workspace, "w", "./splendid-workspace", "Workspace")
 	flag.IntVar(&Conf.Concurrency, "c", 30, "Number of collector processes")
 	flag.StringVar(&Conf.SmtpString, "s", "localhost:25", "SMTP server:port")

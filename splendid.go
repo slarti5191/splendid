@@ -3,6 +3,7 @@ package splendid
 import (
 	"fmt"
 	"github.com/slarti5191/splendid/collectors"
+	"github.com/slarti5191/splendid/configuration"
 	"time"
 )
 
@@ -10,7 +11,7 @@ import (
 const version = "0.0.0"
 
 func Init() {
-	SetConfigs()
+	configuration.SetConfigs()
 	go threadWebserver()
 	threadCollectors()
 }
@@ -23,19 +24,6 @@ func threadWebserver() {
 }
 
 func threadCollectors() {
-	// Get global configs
-	//Conf := *SetConfigs()
-	// Get device configs
-	//Dev := DeviceConfig{}
-
-	// Set up DeviceConfig
-	//Dev := new(DeviceConfig)
-	//Dev.Method = "cisco"
-	// Get Commands out of collectors.Generate
-	//Cmds := collectors.Generate(string(Dev.Method))
-	// Kick off a collector
-	//RunCollector(Dev, Conf, Cmds)
-
 	// TODO: Move this into the master collector.
 	exampleCollector, err := collectors.MakeCollector("pfsense")
 	if err != nil {
@@ -58,7 +46,7 @@ func threadCollectors() {
 
 // RunCollector collects configs
 // Grab global configs as Conf, device specific commands as Cmd
-func runCollector(Dev DeviceConfig, Opts SplendidConfig) {
+func runCollector(Dev configuration.DeviceConfig, Opts configuration.SplendidConfig) {
 	// iterate over Cmds, expect matching output, fail otherwise
 	fmt.Print(Dev, Opts)
 }
