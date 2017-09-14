@@ -5,7 +5,7 @@ import (
 )
 
 func testConfiguration(t *testing.T) {
-	_, err := SetConfigs()
+	_, err := GetConfigs()
 	if err != nil {
 		t.Errorf("Configs should not error.")
 	}

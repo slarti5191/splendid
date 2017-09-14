@@ -11,7 +11,7 @@ import (
 const version = "0.0.0"
 
 func Init() {
-	configuration.SetConfigs()
+	configuration.GetConfigs()
 	go threadWebserver()
 	threadCollectors()
 }

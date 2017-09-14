@@ -38,8 +38,8 @@ type SplendidConfig struct {
 }
 
 // SetConfigs loads the config file, then parses flags
-func SetConfigs() (*SplendidConfig, error) {
-	Conf, err := LoadConfig()
+func GetConfigs() (*SplendidConfig, error) {
+	Conf, err := loadConfig()
 	if err != nil {
 		return nil, errors.New("Error loading configuration")
 	}

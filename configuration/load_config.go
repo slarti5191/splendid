@@ -6,7 +6,7 @@ import (
 )
 
 // LoadConfig loads the saved config file
-func LoadConfig() (*SplendidConfig, error) {
+func loadConfig() (*SplendidConfig, error) {
 	Conf := new(SplendidConfig)
 	// Load config file
 	Conf.ConfigFile = "sample.conf"
