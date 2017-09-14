@@ -1,9 +1,7 @@
 package configuration
 
 import (
-	"errors"
 	"github.com/go-ini/ini"
-	"reflect"
 )
 
 // LoadConfig loads the saved config file
@@ -12,16 +10,12 @@ func loadConfig(configFile string) (*SplendidConfig, error) {
 	// Load config file
 	conf.ConfigFile = configFile
 	cfg, err := ini.Load(conf.ConfigFile)
-	if err != nil {
-		// How are we improving on simply passing the error up the stack?
-		//return nil, err
-		return nil, errors.New("Load failed: " + err.Error())
-	}
-
-	// TODO: DARN... after all of this, I saw MapTo(p)
+	// map config file to SplendidConfig struct
+	err = cfg.Section("main").MapTo(conf)
 
 	// TODO: Refactor this out into separate methods.
 
+	/* I think this can go now?
 	// Get a reflection Value for the SplendidConfig conf variable.
 	sConf := reflect.ValueOf(conf).Elem()
 
@@ -43,9 +37,7 @@ func loadConfig(configFile string) (*SplendidConfig, error) {
 			return nil, errors.New("Unrecognized field type: " + field.Kind().String())
 		}
 	}
-
-	//conf.Debug = cfg.Section("main").Key("Debug").MustBool()
-	//conf.DefaultUser = cfg.Section("main").Key("DefaultUser").Value()
+	*/
 
 	// TODO: Iterate through all other sections and create DeviceConfigs
 	//for a, b := range cfg.Sections() {
@@ -55,5 +47,5 @@ func loadConfig(configFile string) (*SplendidConfig, error) {
 	//	fmt.Println("-----")
 	//}
 
-	return conf, nil
+	return conf, err
 }
