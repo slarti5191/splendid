@@ -1,7 +1,6 @@
 package configuration
 
 import (
-	"errors"
 	"fmt"
 	"time"
 )
@@ -16,6 +15,7 @@ type DeviceConfig struct {
 }
 
 type SplendidConfig struct {
+	Debug         bool
 	Interval      time.Duration
 	Timeout       time.Duration
 	GitPush       bool
@@ -38,12 +38,19 @@ type SplendidConfig struct {
 }
 
 // SetConfigs loads the config file, then parses flags
-func GetConfigs() (*SplendidConfig, error) {
-	Conf, err := loadConfig()
+func GetConfigs(configFile string) (*SplendidConfig, error) {
+	conf, err := loadConfig(configFile)
 	if err != nil {
-		return nil, errors.New("Error loading configuration")
+		// Just pass the err up the stack?
+		return nil, err
+		//return nil, errors.New("Error loading configuration")
 	}
-	parseConfigFlags(Conf)
-	fmt.Println(Conf)
-	return Conf, nil
+	parseConfigFlags(conf)
+
+	if conf.Debug {
+		fmt.Println("DEBUG ENABLED")
+	}
+	fmt.Println(conf)
+
+	return conf, nil
 }

@@ -5,6 +5,10 @@ bin
 *.so
 *.dylib
 
+# Config files
+splendid.conf
+test.conf
+
 # Test binary, build with `go test -c`
 *.test
 
