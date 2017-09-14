@@ -10,6 +10,7 @@ import (
 const version = "0.0.0"
 
 func Init() {
+	SetConfigs()
 	go threadWebserver()
 	threadCollectors()
 }

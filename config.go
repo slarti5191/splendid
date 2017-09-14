@@ -33,10 +33,11 @@ type SplendidConfig struct {
 	DefaultMethod string
 	CmwPass       string
 	Devices       []DeviceConfig
+	ConfigFile    string
 }
 
 // setConfigs parses splendid.conf
-func SetConfigs() *SplendidConfig {
+func SetConfigs() (*SplendidConfig, error) {
 	// set up config defaults
 	Conf := new(SplendidConfig)
 	//parse cli flags
@@ -49,6 +50,7 @@ func SetConfigs() *SplendidConfig {
 	flag.BoolVar(&Conf.GitPush, "push", false, "Git push after commit")
 	flag.BoolVar(&Conf.HttpEnabled, "web", false, "Run an HTTP status server")
 	flag.StringVar(&Conf.HttpListen, "listen", "localhost:5000", "Host and port to use for HTTP status server (default: localhost:5000).")
+	flag.StringVar(&Conf.ConfigFile, "f", "sample.conf", "Config File")
 	flag.Parse()
-	return Conf
+	return Conf, nil
 }
