@@ -11,7 +11,17 @@ import (
 const version = "0.0.0"
 
 func Init() {
-	configuration.GetConfigs("sample.conf")
+	config, err := configuration.GetConfigs("sample.conf")
+	if err != nil {
+		panic(err)
+	}
+
+	if config.Debug {
+		fmt.Println("DEBUG ENABLED")
+	}
+	fmt.Println(config)
+
+
 	go threadWebserver()
 	threadCollectors()
 }

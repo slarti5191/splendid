@@ -2,16 +2,25 @@ package configuration
 
 import (
 	"github.com/go-ini/ini"
+	"fmt"
 )
 
 // LoadConfig loads the saved config file
 func loadConfig(configFile string) (*SplendidConfig, error) {
+	// Initialize Splendid Config
 	conf := new(SplendidConfig)
-	// Load config file
 	conf.ConfigFile = configFile
+
+	// Load the INI file.
 	cfg, err := ini.Load(conf.ConfigFile)
+	if err != nil {
+		return nil, err
+	}
+
 	// map config file to SplendidConfig struct
-	err = cfg.Section("main").MapTo(conf)
+	if err = cfg.Section("main").MapTo(conf); err != nil {
+		return nil, fmt.Errorf("error mapping main config: %v", err)
+	}
 
 	// TODO: Refactor this out into separate methods.
 
@@ -39,7 +48,7 @@ func loadConfig(configFile string) (*SplendidConfig, error) {
 	}
 	*/
 
-	// TODO: Iterate through all other sections and create DeviceConfigs
+	// Iterate through all other sections and create DeviceConfigs
 	//for a, b := range cfg.Sections() {
 	//	fmt.Println("====Sections====")
 	//	fmt.Println(a)
