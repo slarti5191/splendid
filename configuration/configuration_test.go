@@ -7,7 +7,7 @@ import (
 
 func TestConfiguration(t *testing.T) {
 	configFile := "../test.conf"
-	config, deviceconfig, err := GetConfigs(configFile)
+	config, err := GetConfigs(configFile)
 	if err != nil {
 		t.Fatalf("getconfigs returned err: %v", err)
 	}
@@ -18,8 +18,5 @@ func TestConfiguration(t *testing.T) {
 	}
 	if config.DefaultUser != "splendid" {
 		t.Fatal("Expected: splendid Got: %v", config.DefaultUser)
-	}
-	if deviceconfig.Host != "localhost" {
-		t.Fatal("Expected: localhost Got: %v", deviceconfig.Host)
 	}
 }

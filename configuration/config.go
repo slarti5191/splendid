@@ -1,8 +1,8 @@
 package configuration
 
 import (
-	"time"
 	"reflect"
+	"time"
 )
 
 type DeviceConfig struct {
@@ -14,7 +14,6 @@ type DeviceConfig struct {
 	Port           int
 	Timeout        time.Duration
 	CommandTimeout time.Duration
-	Config         map[string]string
 }
 
 type SplendidConfig struct {
@@ -41,14 +40,14 @@ type SplendidConfig struct {
 }
 
 // GetConfigs loads the config file, then parses flags
-func GetConfigs(configFile string) (*SplendidConfig, *DeviceConfig, error) {
-	c, dconf, err := loadConfig(configFile)
+func GetConfigs(configFile string) (*SplendidConfig, error) {
+	c, err := loadConfig(configFile)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	flags, err := parseConfigFlags(c)
 	conf := c.flagUpdate(*flags)
-	return &conf, dconf, nil
+	return &conf, nil
 }
 
 func (c SplendidConfig) flagUpdate(f SplendidConfig) (conf SplendidConfig) {

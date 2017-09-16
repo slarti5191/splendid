@@ -11,7 +11,7 @@ import (
 const version = "0.0.0"
 
 func Init() {
-	config, deviceconfig, err := configuration.GetConfigs("sample.conf")
+	config, err := configuration.GetConfigs("sample.conf")
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +20,6 @@ func Init() {
 		fmt.Println("DEBUG ENABLED")
 	}
 	fmt.Println(config)
-	fmt.Println(deviceconfig)
 
 	go threadWebserver()
 	threadCollectors()
