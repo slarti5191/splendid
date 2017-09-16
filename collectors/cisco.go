@@ -2,7 +2,7 @@ package collectors
 
 // devCisco lowercase means this is private to the collectors package.
 type devCisco struct {
-	commands []map[string]string
+	commands [][]string
 }
 
 // Collect method is all that is necessary to implement the interface.
@@ -10,18 +10,20 @@ func (c devCisco) Collect() string {
 	return "<xml>Example</xml>"
 }
 
-// makeCisco creates a struct that implements the Collector
+// makeCisco implements the Collector
 // interface for collecting Cisco configs.
 func makeCisco() Collector {
-	// Set commands to their expected output (last line)
+	c := [][]string{}
+	// Set commands to their expected output
+	// each command gets a new slice containing the
+	// command and a string expected after execution
+	pager := []string{
+		"set pager", "",
+	}
+	config := []string{
+		"show run", "#",
+	}
 	return devCisco{
-		[]map[string]string{
-			{
-				"set pager": "",
-			},
-			{
-				"show run": "#",
-			},
-		},
+		append(c, pager, config),
 	}
 }
