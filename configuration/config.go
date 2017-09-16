@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"time"
+	"reflect"
 )
 
 type DeviceConfig struct {
@@ -41,11 +42,25 @@ type SplendidConfig struct {
 
 // GetConfigs loads the config file, then parses flags
 func GetConfigs(configFile string) (*SplendidConfig, *DeviceConfig, error) {
-	conf, dconf, err := loadConfig(configFile)
+	c, dconf, err := loadConfig(configFile)
 	if err != nil {
 		return nil, nil, err
 	}
-	parseConfigFlags(conf)
+	flags, err := parseConfigFlags(c)
+	conf := c.flagUpdate(*flags)
+	return &conf, dconf, nil
+}
 
-	return conf, dconf, nil
+func (c SplendidConfig) flagUpdate(f SplendidConfig) (conf SplendidConfig) {
+	old := reflect.ValueOf(c)
+	new := reflect.ValueOf(f)
+	final := reflect.ValueOf(&conf).Elem()
+	for i := 0; i < old.NumField(); i++ {
+		if !new.Field(i).IsValid() {
+			final.Field(i).Set(new.Field(i))
+		} else {
+			final.Field(i).Set(old.Field(i))
+		}
+	}
+	return
 }
