@@ -5,11 +5,12 @@ import (
 )
 
 type DeviceConfig struct {
-	Hostname       string
-	Method         string
+	Host           string
+	Type           string
 	Target         string
 	User           string
 	Pass           string
+	Port           int
 	Timeout        time.Duration
 	CommandTimeout time.Duration
 	Config         map[string]string
@@ -39,12 +40,12 @@ type SplendidConfig struct {
 }
 
 // GetConfigs loads the config file, then parses flags
-func GetConfigs(configFile string) (*SplendidConfig, error) {
-	conf, err := loadConfig(configFile)
+func GetConfigs(configFile string) (*SplendidConfig, *DeviceConfig, error) {
+	conf, dconf, err := loadConfig(configFile)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	parseConfigFlags(conf)
 
-	return conf, nil
+	return conf, dconf, nil
 }
