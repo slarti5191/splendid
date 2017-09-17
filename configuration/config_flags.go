@@ -2,20 +2,18 @@ package configuration
 
 import (
 	"flag"
-	"time"
 )
 
-// parseConfigFlags overwrites configuration with set flags
-func parseConfigFlags(Conf *SplendidConfig) (*SplendidConfig, error) {
+// parseConfigFlags reads in configuration with set flags
+func parseConfigFlags(flags *SplendidConfig, defaults SplendidConfig) {
 	// Set to passed flags, otherwise go with config
-	flag.IntVar(&Conf.Concurrency, "c", Conf.Concurrency, "Number of collector processes")
-	flag.StringVar(&Conf.SmtpString, "s", Conf.SmtpString, "SMTP server:port")
-	flag.DurationVar(&Conf.Interval, "interval", Conf.Interval*time.Second, "Run interval")
-	flag.DurationVar(&Conf.Timeout, "timeout", Conf.Timeout*time.Second, "Collection timeout")
-	flag.BoolVar(&Conf.Insecure, "insecure", Conf.Insecure, "Allow untrusted SSH keys")
-	flag.BoolVar(&Conf.HttpEnabled, "web", Conf.HttpEnabled, "Run an HTTP status server")
-	flag.StringVar(&Conf.HttpListen, "listen", Conf.HttpListen, "Host and port to use for HTTP status server (default: localhost:5000).")
-	flag.StringVar(&Conf.ConfigFile, "f", Conf.ConfigFile, "Config File")
+	flag.IntVar(&flags.Concurrency, "c", defaults.Concurrency, "Number of collector processes")
+	flag.StringVar(&flags.SmtpString, "s", defaults.SmtpString, "SMTP")
+	//flag.DurationVar(&flags.Interval, "interval", defaults.Interval, "Run interval")
+	//flag.DurationVar(&flags.Timeout, "timeout", defaults.Timeout, "Collection timeout")
+	flag.BoolVar(&flags.Insecure, "insecure", defaults.Insecure, "Allow untrusted SSH keys")
+	flag.BoolVar(&flags.HttpEnabled, "web", defaults.HttpEnabled, "Run an HTTP status server")
+	flag.StringVar(&flags.HttpListen, "listen", defaults.HttpListen, "Host and port to use for HTTP status server.")
+	flag.StringVar(&flags.ConfigFile, "f", defaults.ConfigFile, "Config File")
 	flag.Parse()
-	return Conf, nil
 }

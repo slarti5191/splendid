@@ -5,51 +5,66 @@ import (
 	"github.com/slarti5191/splendid/collectors"
 	"github.com/slarti5191/splendid/configuration"
 	"time"
+	"log"
 )
 
 // Two primary threads. Webserver and collectors.
 const version = "0.0.0"
 
-func Init() {
-	config, err := configuration.GetConfigs("sample.conf")
+type Splendid struct {
+	config *configuration.SplendidConfig
+	cols []collectors.Collector
+}
+
+// Run is the entry point to the application.
+func (s *Splendid) Run() {
+	var err error
+	s.config, err = configuration.GetConfigs("sample.conf")
 	if err != nil {
 		panic(err)
 	}
 
-	if config.Debug {
-		fmt.Println("DEBUG ENABLED")
+	if s.config.Debug {
+		log.Println("DEBUG ENABLED")
 	}
-	fmt.Println(config)
+	log.Println(s.config)
 
-	go threadWebserver()
-	threadCollectors()
+	go s.threadWebserver()
+	s.threadCollectors()
 }
 
-func threadWebserver() {
+// threadWebserver is a placeholder for what will someday be a webserver.
+func (s *Splendid) threadWebserver() {
 	for {
 		fmt.Println("> Webserver code on another branch.")
 		time.Sleep(3 * time.Second)
 	}
 }
 
-func threadCollectors() {
-	// TODO: Move this into the master collector.
-	exampleCollector, err := collectors.MakeCollector("pfsense")
-	if err != nil {
-		fmt.Println("Oh no, an error")
-	}
+// threadCollectors iterates through all device configs and runs the collectors.
+func (s *Splendid) threadCollectors() {
+	//s.cols = make([]collectors.Collector, len(s.config.Devices))
+	//for i, c := range s.config.Devices {
+	//	collector, err := collectors.MakeCollector(c)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	s.cols[i] = collector
+	//}
 
 	// Main collector loop.
 	for {
 		fmt.Println("> Running Collector Loop")
 
-		result := exampleCollector.Collect()
-		fmt.Println(result)
+		// TODO: Use concurrency!
+		for _, c := range s.cols {
+			go func() {
+				result := c.Collect()
+				fmt.Println(result)
+			}()
+		}
 
-		// Kick off a collector
-		//runCollector(Dev, Conf)
-
-		time.Sleep(5 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }
 

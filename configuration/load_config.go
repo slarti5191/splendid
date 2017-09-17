@@ -6,31 +6,35 @@ import (
 )
 
 // loadConfig loads the saved config file
-func loadConfig(configFile string) (*SplendidConfig, error) {
-	conf := new(SplendidConfig)
-	conf.ConfigFile = configFile
+// config is intentionally NOT passed by reference, so we can modify
+// it without modifying the original defaults instance.
+func loadConfig(configFile string, config SplendidConfig) (*SplendidConfig, error) {
 	// Load the INI file.
-	cfg, err := ini.Load(conf.ConfigFile)
+	cfg, err := ini.Load(configFile)
 	if err != nil {
 		return nil, err
 	}
 
-	c, err := mainConfig(cfg.Section("main"), conf)
-	// Grab device configs
-	err = devConfig(cfg, c)
+	err = mainConfig(cfg.Section("main"), &config)
 	if err != nil {
 		return nil, err
 	}
-	return c, err
+
+	// Grab device configs
+	err = devConfig(cfg, &config)
+	if err != nil {
+		return nil, err
+	}
+	return &config, err
 }
 
 // mainConfig maps the main section to SplendidConfig
-func mainConfig(cfg *ini.Section, conf *SplendidConfig) (*SplendidConfig, error) {
+func mainConfig(cfg *ini.Section, conf *SplendidConfig) error {
 	err := cfg.MapTo(conf)
 	if err != nil {
-		return nil, fmt.Errorf("error mapping main config: %v", err)
+		return fmt.Errorf("error mapping main config: %v", err)
 	}
-	return conf, err
+	return nil
 }
 
 // devConfig maps the device config section to SplendidConfig.Devices
@@ -39,7 +43,7 @@ func devConfig(cfg *ini.File, conf *SplendidConfig) error {
 		dconf := DeviceConfig{}
 		if b.HasKey("Host") {
 			b.MapTo(&dconf)
-			conf.Devices = append(conf.Devices, dconf)
+			//conf.Devices = append(conf.Devices, dconf)
 		}
 	}
 	return nil

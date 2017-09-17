@@ -1,6 +1,9 @@
 package collectors
 
-import "errors"
+import (
+	"errors"
+	"github.com/slarti5191/splendid/configuration"
+)
 
 // Collector interface is the only common need between the various collectors.
 // Ultimately, the core routine only cares to run collect on each collector.
@@ -11,14 +14,14 @@ type Collector interface {
 
 // MakeCollector will generate the appropriate collector based on the
 // type string passed in by the configuration.
-func MakeCollector(m string) (Collector, error) {
-	switch m {
+func MakeCollector(d configuration.DeviceConfig) (Collector, error) {
+	switch d.Type {
 	case "cisco_csb":
-		return makeCiscoCsb(), nil
+		return makeCiscoCsb(d), nil
 	case "cisco":
-		return makeCisco(), nil
+		return makeCisco(d), nil
 	case "pfsense":
-		return makePfsense(), nil
+		return makePfsense(d), nil
 	default:
 		return nil, errors.New("unrecognized collector type")
 	}

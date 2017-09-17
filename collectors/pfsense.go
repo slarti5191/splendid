@@ -2,14 +2,16 @@ package collectors
 
 import (
 	"github.com/slarti5191/splendid/utils"
+	"github.com/slarti5191/splendid/configuration"
 )
 
 type devPfsense struct {
+	config configuration.DeviceConfig
 }
 
-func (c devPfsense) Collect() string {
+func (d devPfsense) Collect() string {
 	s := new(utils.SSHRunner)
-	s.Connect("splendid", "splendid", "pfsense.lan.hdthings.com")
+	s.Connect(d.config.User, d.config.Pass, d.config.Host)
 
 	// TODO: Non-primary user, press the "8" key.
 	// Likely to need an SSH shell instead. Plus,
@@ -21,6 +23,6 @@ func (c devPfsense) Collect() string {
 	return result
 }
 
-func makePfsense() Collector {
-	return new(devPfsense)
+func makePfsense(d configuration.DeviceConfig) Collector {
+	return &devPfsense{d}
 }
