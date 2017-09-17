@@ -13,6 +13,8 @@ type Collector interface {
 // type string passed in by the configuration.
 func MakeCollector(m string) (Collector, error) {
 	switch m {
+	case "cisco_csb":
+		return makeCiscoCsb(), nil
 	case "cisco":
 		return makeCisco(), nil
 	case "pfsense":
