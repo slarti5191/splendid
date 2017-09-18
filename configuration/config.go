@@ -1,10 +1,10 @@
 package configuration
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"time"
-	"fmt"
 )
 
 type DeviceConfig struct {
@@ -73,10 +73,18 @@ func GetConfigs(configFile string) (*SplendidConfig, error) {
 
 	// 1) Need to load flags first to determine which config file to use.
 	flags := parseConfigFlags(defaults)
-log.Println(flags)
+	log.Println(flags)
+
+	// ....
+	// TODO: Bad...
+	if flags.ConfigFile == "" {
+		flags.ConfigFile = defaults.ConfigFile
+	}
+
 	// 2) Load in config from file on top of defaults array.
 	config, err := loadConfig(flags.ConfigFile, defaults)
 	if err != nil {
+		panic(err)
 		return nil, fmt.Errorf("Error[%s] %s", flags.ConfigFile, err)
 	}
 
