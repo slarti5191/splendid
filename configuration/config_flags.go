@@ -3,19 +3,19 @@ package configuration
 import (
 	"flag"
 	"log"
-	"strconv"
+	"time"
 )
 
-func init() {
-	defaults := SplendidConfig{
+func fetchDefaults() SplendidConfig {
+	return SplendidConfig{
 		false,
-		30,
-		120,
+		30 * time.Second,
+		120 * time.Second,
 		false,
 		false,
 		30,
 		"localhost:5001",
-		true,
+		false,
 		"server:port",
 		"/workspace",
 		"/",
@@ -29,15 +29,31 @@ func init() {
 		nil,
 		"sample.conf",
 	}
+}
 
-	flag.Int("c", defaults.Concurrency, "Number of collector processes")
-	flag.String( "s", defaults.SmtpString, "SMTP")
-	flag.Duration( "interval", defaults.Interval, "Run interval")
-	flag.Duration("timeout", defaults.Timeout, "Collection timeout")
-	flag.Bool("insecure", defaults.Insecure, "Allow untrusted SSH keys")
-	flag.Bool( "web", defaults.HttpEnabled, "Run an HTTP status server")
+func init() {
+	log.Println("=-- FLAGS: INIT --=")
+	// Runs before unit tests. :(
+	createFlags()
+}
+
+func createFlags() {
+	log.Println("=-- FLAGS: Creating --=")
+	defaults := fetchDefaults()
+
+	flag.String("c", defaults.ConfigFile, "Config file name.")
+	flag.Int("p", defaults.Concurrency, "Parallel concurrent threads to use for collection.")
+
+	// Interval and Timeout
+	flag.Duration("i", defaults.Interval, "Interval in seconds between run calls.")
+	flag.Duration("t", defaults.Timeout, "Timeout default in seconds to wait for collection to finish.")
+
+	flag.Bool("x", defaults.Insecure, "Allow untrusted SSH keys.")
+
+	flag.String("smtp", defaults.SmtpString, "SMTP connection string.")
+
+	flag.Bool("w", defaults.HttpEnabled, "Run a web status server.")
 	flag.String("listen", defaults.HttpListen, "Host and port to use for HTTP status server.")
-	flag.String("f", defaults.ConfigFile, "Config File")
 }
 
 // https://stackoverflow.com/questions/17412908/how-do-i-unit-test-command-line-flags-in-go
@@ -54,19 +70,19 @@ func parseConfigFlags(defaults SplendidConfig) SplendidConfig {
 
 	flag.Parse()
 
-	setta := func(n string, v flag.Value) {
-		switch n {
-		case "c":
-			flags.Concurrency, _ = strconv.Atoi(v.String())
-		case "f":
-			flags.ConfigFile = v.String()
-		}
-	}
-
-	flag.Visit(func(flag *flag.Flag) {
-		log.Printf("Flag[%s] %s", flag.Name, flag.Value)
-		setta(flag.Name, flag.Value)
-	})
+	//setta := func(n string, v flag.Value) {
+	//	switch n {
+	//	case "c":
+	//		flags.Concurrency, _ = strconv.Atoi(v.String())
+	//	case "f":
+	//		flags.ConfigFile = v.String()
+	//	}
+	//}
+	//
+	//flag.Visit(func(flag *flag.Flag) {
+	//	log.Printf("Flag[%s] %s", flag.Name, flag.Value)
+	//	setta(flag.Name, flag.Value)
+	//})
 
 	return flags
 

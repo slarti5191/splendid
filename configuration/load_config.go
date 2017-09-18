@@ -3,6 +3,7 @@ package configuration
 import (
 	"fmt"
 	"github.com/go-ini/ini"
+	"log"
 )
 
 // loadConfig loads the saved config file
@@ -12,6 +13,8 @@ func loadConfig(configFile string, config SplendidConfig) (*SplendidConfig, erro
 	// Load the INI file.
 	cfg, err := ini.Load(configFile)
 	if err != nil {
+		log.Println(configFile)
+		panic(err)
 		return nil, err
 	}
 

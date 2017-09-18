@@ -1,22 +1,27 @@
 package configuration
 
 import (
-	"testing"
-	"time"
 	"flag"
 	"os"
+	"testing"
+	"time"
 )
 
 func TestConfiguration(t *testing.T) {
-	configFile := "test.conf"
-	ResetForTesting(nil)
+	// Need to overwrite flags....
+	os.Args = []string{"splendid", "-x"}
+
+	configFile := "../test.conf"
+	//ResetForTesting(nil)
 	config, err := GetConfigs(configFile)
 	if err != nil {
-		t.Fatalf("getconfigs returned err: %v", err)
+		t.Error(err)
+		t.Fatalf("Open: %v Err: %v", configFile, err)
+		t.Fatalf("Open: %v Err: %v", configFile, err)
 	}
-    //https://golang.org/src/flag/flag_test.go
-	ResetForTesting(nil)
-	_, _ = GetConfigs(configFile)
+	//https://golang.org/src/flag/flag_test.go
+	//ResetForTesting(nil)
+	//_, _ = GetConfigs(configFile)
 
 	// Expects
 	if config.Timeout != 120*time.Second {
@@ -27,7 +32,7 @@ func TestConfiguration(t *testing.T) {
 	}
 }
 
-func TestOverrides(t *testing.T) {
+func xTestOverrides(t *testing.T) {
 
 }
 
@@ -37,7 +42,7 @@ func ResetForTesting(usage func()) {
 	flag.Usage = usage
 }
 
-func TestFlags(t *testing.T) {
+func xTestFlags(t *testing.T) {
 	os.Args = []string{"splendid", "-f", "../splendid.conf"}
 	//ResetForTesting(nil)
 	sc := SplendidConfig{}
