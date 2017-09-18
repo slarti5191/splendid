@@ -4,6 +4,7 @@ import (
 	"log"
 	"reflect"
 	"time"
+	"fmt"
 )
 
 type DeviceConfig struct {
@@ -72,11 +73,11 @@ func GetConfigs(configFile string) (*SplendidConfig, error) {
 
 	// 1) Need to load flags first to determine which config file to use.
 	flags := parseConfigFlags(defaults)
-
+log.Println(flags)
 	// 2) Load in config from file on top of defaults array.
 	config, err := loadConfig(flags.ConfigFile, defaults)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error[%s] %s", flags.ConfigFile, err)
 	}
 
 	// 3) If flag value is provided by user, apply override.
