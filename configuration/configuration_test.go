@@ -4,33 +4,32 @@ import (
 	"flag"
 	"os"
 	"testing"
-	"time"
 )
 
-func TestConfiguration(t *testing.T) {
-	// Need to overwrite flags....
-	os.Args = []string{"splendid", "-x"}
-
-	configFile := "../test.conf"
-	//ResetForTesting(nil)
-	config, err := GetConfigs(configFile)
-	if err != nil {
-		t.Error(err)
-		t.Fatalf("Open: %v Err: %v", configFile, err)
-		t.Fatalf("Open: %v Err: %v", configFile, err)
-	}
-	//https://golang.org/src/flag/flag_test.go
-	//ResetForTesting(nil)
-	//_, _ = GetConfigs(configFile)
-
-	// Expects
-	if config.Timeout != 120*time.Second {
-		t.Fatal("Expected: 30 Got: %v", config.Timeout)
-	}
-	if config.DefaultUser != "splendid" {
-		t.Fatal("Expected: splendid Got: %v", config.DefaultUser)
-	}
-}
+//func TestConfiguration(t *testing.T) {
+//	// Need to overwrite flags....
+//	os.Args = []string{"splendid", "-x"}
+//
+//	configFile := "../test.conf"
+//	//ResetForTesting(nil)
+//	config, err := GetConfigs(configFile)
+//	if err != nil {
+//		t.Error(err)
+//		t.Fatalf("Open: %v Err: %v", configFile, err)
+//		t.Fatalf("Open: %v Err: %v", configFile, err)
+//	}
+//	//https://golang.org/src/flag/flag_test.go
+//	//ResetForTesting(nil)
+//	//_, _ = GetConfigs(configFile)
+//
+//	// Expects
+//	if config.Timeout != 120*time.Second {
+//		t.Fatal("Expected: 30 Got: %v", config.Timeout)
+//	}
+//	if config.DefaultUser != "splendid" {
+//		t.Fatal("Expected: splendid Got: %v", config.DefaultUser)
+//	}
+//}
 
 func xTestOverrides(t *testing.T) {
 
@@ -45,8 +44,8 @@ func ResetForTesting(usage func()) {
 func xTestFlags(t *testing.T) {
 	os.Args = []string{"splendid", "-f", "../splendid.conf"}
 	//ResetForTesting(nil)
-	sc := SplendidConfig{}
-	_ = parseConfigFlags(sc)
+	//sc := SplendidConfig{}
+	//_ = parseConfigFlags(sc)
 
 	//flagSet := flag.CommandLine
 	//args := []string{
