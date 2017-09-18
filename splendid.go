@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"github.com/slarti5191/splendid/collectors"
 	"github.com/slarti5191/splendid/configuration"
-	"time"
 	"log"
+	"os"
+	"time"
 )
 
 // Two primary threads. Webserver and collectors.
@@ -13,7 +14,7 @@ const version = "0.0.0"
 
 type Splendid struct {
 	config *configuration.SplendidConfig
-	cols []collectors.Collector
+	cols   []collectors.Collector
 }
 
 // Run is the entry point to the application.
@@ -25,9 +26,10 @@ func (s *Splendid) Run() {
 	}
 
 	if s.config.Debug {
-		log.Println("DEBUG ENABLED")
+		log.Println("DEBUG ENABLED: Dumping config and exiting.")
+		log.Println(s.config)
+		os.Exit(0)
 	}
-	log.Println(s.config)
 
 	go s.threadWebserver()
 	s.threadCollectors()
@@ -43,14 +45,14 @@ func (s *Splendid) threadWebserver() {
 
 // threadCollectors iterates through all device configs and runs the collectors.
 func (s *Splendid) threadCollectors() {
-	//s.cols = make([]collectors.Collector, len(s.config.Devices))
-	//for i, c := range s.config.Devices {
-	//	collector, err := collectors.MakeCollector(c)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	s.cols[i] = collector
-	//}
+	s.cols = make([]collectors.Collector, len(s.config.Devices))
+	for i, c := range s.config.Devices {
+		collector, err := collectors.MakeCollector(c)
+		if err != nil {
+			panic(err)
+		}
+		s.cols[i] = collector
+	}
 
 	// Main collector loop.
 	for {

@@ -43,7 +43,7 @@ func devConfig(cfg *ini.File, conf *SplendidConfig) error {
 		dconf := DeviceConfig{}
 		if b.HasKey("Host") {
 			b.MapTo(&dconf)
-			//conf.Devices = append(conf.Devices, dconf)
+			conf.Devices = append(conf.Devices, dconf)
 		}
 	}
 	return nil

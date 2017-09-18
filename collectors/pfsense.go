@@ -1,8 +1,8 @@
 package collectors
 
 import (
-	"github.com/slarti5191/splendid/utils"
 	"github.com/slarti5191/splendid/configuration"
+	"github.com/slarti5191/splendid/utils"
 )
 
 type devPfsense struct {

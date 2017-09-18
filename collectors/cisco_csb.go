@@ -1,9 +1,9 @@
 package collectors
 
 import (
+	"github.com/slarti5191/splendid/configuration"
 	"github.com/slarti5191/splendid/utils"
 	"log"
-	"github.com/slarti5191/splendid/configuration"
 )
 
 type devCiscoCsb struct {
