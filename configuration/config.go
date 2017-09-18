@@ -1,11 +1,21 @@
 package configuration
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"time"
 )
+
+type Config struct {
+	Debug            bool
+	ConfigFile       string
+	Concurrency      int
+	DefaultUser      string
+	Workspace        string
+	WebserverEnabled bool
+	// Devices
+	Devices []DeviceConfig
+}
 
 type DeviceConfig struct {
 	Host           string
@@ -41,63 +51,116 @@ type SplendidConfig struct {
 	ConfigFile    string
 }
 
-// GetConfigs loads the config file, then parses flags
-func GetConfigs(configFile string) (*SplendidConfig, error) {
-	// 0: Initialize Defaults
-	defaults := SplendidConfig{
+func getConfigDefaults() Config {
+	return Config{
 		false,
-		30,
-		120,
-		false,
-		false,
-		30,
-		"localhost:5001",
-		true,
-		"server:port",
-		"/workspace",
-		"/",
-		"",
-		"",
-		false,
-		"user",
-		"pass",
-		"none",
-		"none",
-		nil,
 		"sample.conf",
+		30,
+		"",
+		"/workspace",
+		false,
+		nil,
 	}
-
-	if configFile != "" {
-		defaults.ConfigFile = configFile
-	}
-
-	// 1) Need to load flags first to determine which config file to use.
-	flags := parseConfigFlags(defaults)
-	log.Println(flags)
-
-	// ....
-	// TODO: Bad...
-	if flags.ConfigFile == "" {
-		flags.ConfigFile = defaults.ConfigFile
-	}
-
-	// 2) Load in config from file on top of defaults array.
-	config, err := loadConfig(flags.ConfigFile, defaults)
-	if err != nil {
-		panic(err)
-		return nil, fmt.Errorf("Error[%s] %s", flags.ConfigFile, err)
-	}
-
-	// 3) If flag value is provided by user, apply override.
-	config.flagUpdate(flags, defaults)
-
-	// 4) And convert to seconds where needed.
-	config.Interval = config.Interval * time.Second
-	config.Timeout = config.Timeout * time.Second
-
-	return config, nil
 }
 
+// GetConfigs loads the config file, then parses flags
+//func GetConfigs(configFile string) (*SplendidConfig, error) {
+//	// 0: Initialize Defaults
+//	defaults := SplendidConfig{
+//		false,
+//		30,
+//		120,
+//		false,
+//		false,
+//		30,
+//		"localhost:5001",
+//		true,
+//		"server:port",
+//		"/workspace",
+//		"/",
+//		"",
+//		"",
+//		false,
+//		"user",
+//		"pass",
+//		"none",
+//		"none",
+//		nil,
+//		"sample.conf",
+//	}
+//
+//	if configFile != "" {
+//		defaults.ConfigFile = configFile
+//	}
+//
+//	// 1) Need to load flags first to determine which config file to use.
+//	flags := parseConfigFlags(defaults)
+//	log.Println(flags)
+//
+//	// ....
+//	// TODO: Bad...
+//	if flags.ConfigFile == "" {
+//		flags.ConfigFile = defaults.ConfigFile
+//	}
+
+// 2) Load in config from file on top of defaults array.
+//config, err := loadConfig(flags.ConfigFile, defaults)
+//if err != nil {
+//	panic(err)
+//	return nil, fmt.Errorf("Error[%s] %s", flags.ConfigFile, err)
+//}
+//
+//// 3) If flag value is provided by user, apply override.
+//config.flagUpdate(flags, defaults)
+//
+//// 4) And convert to seconds where needed.
+//config.Interval = config.Interval * time.Second
+//config.Timeout = config.Timeout * time.Second
+
+//return config, nil
+//}
+
+func (c *Config) mergeConfig(merge Config) {
+
+	mergeValue := reflect.ValueOf(merge)
+	//curValue := reflect.ValueOf(*c)
+	target := reflect.ValueOf(c).Elem()
+
+	for i := 0; i < mergeValue.NumField(); i++ {
+		// Grab default value and flag value.
+		cur := target.Field(i)
+		val := mergeValue.Field(i)
+
+		// Unwraps pointers if necessary.
+		//cur = reflect.Indirect(cur)
+		//val = reflect.Indirect(val)
+
+		// We don't support structs and slices via flag input.
+		if val.Type().Kind() == reflect.Struct || val.Type().Kind() == reflect.Slice {
+			continue
+		}
+
+		// Simple sanity checks.
+		if !val.IsValid() {
+			log.Fatal("Expect valid values.")
+		}
+
+		if cur.Interface() != val.Interface() {
+			// If we have a zero value for the flag, skip it.
+			//if val.Interface() == reflect.Zero(val.Type()).Interface() {
+			//continue
+			//}
+
+			//log.Printf("Override: %v", defaultValue.Type().Field(i).Name)
+			//log.Printf("%v -->> %v", val.Interface(), v2.Interface())
+
+			// Override the config value with flag value.
+			target.Field(i).Set(val)
+		}
+	}
+}
+
+// Keeping the below for reference for the moment.
 func (c *SplendidConfig) flagUpdate(flags SplendidConfig, defaults SplendidConfig) {
 
 	//e, d, err := Compare(flags, defaults)

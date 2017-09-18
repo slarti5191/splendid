@@ -9,7 +9,7 @@ import (
 // loadConfig loads the saved config file
 // config is intentionally NOT passed by reference, so we can modify
 // it without modifying the original defaults instance.
-func loadConfig(configFile string, config SplendidConfig) (*SplendidConfig, error) {
+func oldLoadConfig(configFile string, config SplendidConfig) (*SplendidConfig, error) {
 	// Load the INI file.
 	cfg, err := ini.Load(configFile)
 	if err != nil {

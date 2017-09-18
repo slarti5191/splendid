@@ -13,33 +13,41 @@ import (
 const version = "0.0.0"
 
 type Splendid struct {
-	config *configuration.SplendidConfig
+	config *configuration.Config
 	cols   []collectors.Collector
 }
 
 // Run is the entry point to the application.
 func (s *Splendid) Run() {
-	var err error
-	s.config, err = configuration.GetConfigs("sample.conf")
-	if err != nil {
-		panic(err)
-	}
+	s.config = configuration.GetConfig()
 
+	//var err error
+	//s.config, err = configuration.GetConfigs("sample.conf")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
 	if s.config.Debug {
 		log.Println("DEBUG ENABLED: Dumping config and exiting.")
 		log.Println(s.config)
 		os.Exit(0)
 	}
 
-	go s.threadWebserver()
+	// Kickstart the webserver if enabled.
+	if s.config.WebserverEnabled {
+		go s.threadWebserver()
+	}
+	// Kickstart the main collector thread.
 	s.threadCollectors()
 }
 
 // threadWebserver is a placeholder for what will someday be a webserver.
 func (s *Splendid) threadWebserver() {
+	loopDelay := 5 * time.Second
 	for {
 		fmt.Println("> Webserver code on another branch.")
-		time.Sleep(3 * time.Second)
+		time.Sleep(loopDelay)
+		loopDelay *= 5
 	}
 }
 
