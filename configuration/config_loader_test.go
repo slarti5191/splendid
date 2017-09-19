@@ -30,6 +30,7 @@ func TestLoadMixedConfig(t *testing.T) {
 	expect.Devices = []DeviceConfig{
 		{"localhost", "pfsense", "pfuser", "pfpass", 22, 0, 0},
 	}
+
 	if !reflect.DeepEqual(config, expect) {
 		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, expect)
 	}
@@ -53,20 +54,6 @@ func TestLoadFlagRevertToDefault(t *testing.T) {
 		t.Fatalf("Expected [%v] concurrency, but found [%v]", 30, config.Concurrency)
 	}
 }
-
-// Test simple merge of defaults into an empty config.
-// We are now simply pulling getConfigDefaults, not using merge...
-//func TestLoadConfigDefaults(t *testing.T) {
-//	config := new(Config)
-//	defaults := getConfigDefaults()
-//
-//	// Merge defaults into config.
-//	config.mergeConfig(getConfigDefaults())
-//
-//	if !reflect.DeepEqual(config, &defaults) {
-//		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, &defaults)
-//	}
-//}
 
 // Tests the default config path behavior.
 func TestDefaultConfigPath(t *testing.T) {
