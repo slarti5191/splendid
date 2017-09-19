@@ -1,7 +1,9 @@
 package configuration
 
 import (
+	"log"
 	"sync"
+	"time"
 )
 
 // ConfigLoader - Orchestrates the configuration loading.
@@ -35,6 +37,16 @@ func loadConfig() *Config {
 
 	// Fetch flags and merge on top of file+default values.
 	mergeConfigFlags(config)
+
+	// Sanity Check
+	if config.Interval < time.Second {
+		// TODO: Friendly way to exit?
+		log.Fatalln("Interval should be a minimum of 1s. Did you forget the seconds?")
+	}
+	if config.Timeout < time.Second {
+		// TODO: Friendly way to exit?
+		log.Fatalln("Timeout should be a minimum of 1s. Did you forget the seconds?")
+	}
 
 	return config
 }

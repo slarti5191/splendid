@@ -54,16 +54,18 @@ func (s *Splendid) threadWebserver() {
 // threadCollectors iterates through all device configs and runs the collectors.
 func (s *Splendid) threadCollectors() {
 	// Build our collectors.
-	s.cols = make([]collectors.Collector, len(s.config.Devices))
-	for i, c := range s.config.Devices {
+	s.cols = make([]collectors.Collector, 0, len(s.config.Devices))
+	for _, c := range s.config.Devices {
 		if c.Disabled {
+			// Device config set to disabled=true to quickly turn off.
 			log.Printf("Config disabled: %v", c.Name)
+			continue
 		}
 		collector, err := collectors.MakeCollector(c)
 		if err != nil {
 			panic(err)
 		}
-		s.cols[i] = collector
+		s.cols = append(s.cols, collector)
 	}
 
 	// Main collector loop.
