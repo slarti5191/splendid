@@ -3,6 +3,7 @@ package configuration
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestLoadMixedConfig(t *testing.T) {
@@ -19,13 +20,18 @@ func TestLoadMixedConfig(t *testing.T) {
 	expect := getConfigDefaults()
 	// Expected File Values
 	expect.DefaultUser = "splendid"
+	expect.DefaultPass = "splendid"
+	expect.Timeout = 1337 * time.Second
 	expect.Concurrency = 4
 	// Expected Flag Values
 	expect.Debug = true
 	expect.ConfigFile = "../test.conf"
-
-	if !reflect.DeepEqual(config, &expect) {
-		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, &expect)
+	// Device
+	expect.Devices = []DeviceConfig{
+		{"localhost", "pfsense", "pfuser", "pfpass", 22, 0, 0},
+	}
+	if !reflect.DeepEqual(config, expect) {
+		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, expect)
 	}
 	if config.ConfigFile != "../test.conf" {
 		t.Fatal("ConfigFile value not as expected.")
@@ -49,17 +55,18 @@ func TestLoadFlagRevertToDefault(t *testing.T) {
 }
 
 // Test simple merge of defaults into an empty config.
-func TestLoadConfigDefaults(t *testing.T) {
-	config := new(Config)
-	defaults := getConfigDefaults()
-
-	// Merge defaults into config.
-	config.mergeConfig(getConfigDefaults())
-
-	if !reflect.DeepEqual(config, &defaults) {
-		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, &defaults)
-	}
-}
+// We are now simply pulling getConfigDefaults, not using merge...
+//func TestLoadConfigDefaults(t *testing.T) {
+//	config := new(Config)
+//	defaults := getConfigDefaults()
+//
+//	// Merge defaults into config.
+//	config.mergeConfig(getConfigDefaults())
+//
+//	if !reflect.DeepEqual(config, &defaults) {
+//		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, &defaults)
+//	}
+//}
 
 // Tests the default config path behavior.
 func TestDefaultConfigPath(t *testing.T) {
@@ -67,8 +74,9 @@ func TestDefaultConfigPath(t *testing.T) {
 	setOSFlagsForTesting([]string{
 		"splendid",
 	})
-	defaults := getConfigDefaults()
+	parseConfigFlags()
 	pathByDefault := configFlagsGetConfigPath()
+	defaults := getConfigDefaults()
 
 	if pathByDefault != defaults.ConfigFile {
 		t.Fatalf("Error. Expected: %v Found: %v", defaults.ConfigFile, pathByDefault)
@@ -80,6 +88,7 @@ func TestDefaultConfigPath(t *testing.T) {
 		"splendid",
 		"-c=" + expectedConf,
 	})
+	parseConfigFlags()
 	pathByFlag := configFlagsGetConfigPath()
 
 	if pathByFlag != expectedConf {
@@ -89,13 +98,20 @@ func TestDefaultConfigPath(t *testing.T) {
 
 // Test simple INI Loading.
 func TestLoadConfigFile(t *testing.T) {
-	config := getFileConfig("../test.conf")
+	//config := getFileConfig("../test.conf")
 
 	// We expect other values to be the Zero value.
-	expect := Config{}
-	expect.Debug = true
-	expect.Concurrency = 4
+	expect := new(Config)
 	expect.DefaultUser = "splendid"
+	expect.DefaultPass = "splendid"
+	expect.Timeout = 1337 * time.Second
+	expect.Concurrency = 4
+	expect.Devices = []DeviceConfig{
+		{"localhost", "pfsense", "pfuser", "pfpass", 22, 0, 0},
+	}
+
+	config := new(Config)
+	mergeConfigFile(config, "../test.conf")
 
 	if !reflect.DeepEqual(config, expect) {
 		t.Fatalf("Loaded config not as expected.\nFound: %v\nExpected: %v", config, expect)

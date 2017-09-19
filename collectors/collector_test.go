@@ -9,7 +9,6 @@ func TestMakeCollector(t *testing.T) {
 	c, err := MakeCollector(configuration.DeviceConfig{
 		"localhost",
 		"cisco",
-		"",
 		"user",
 		"pass",
 		22,
@@ -27,7 +26,6 @@ func TestMakeCollector(t *testing.T) {
 	c, err = MakeCollector(configuration.DeviceConfig{
 		"localhost",
 		"fake",
-		"",
 		"user",
 		"pass",
 		22,
@@ -46,7 +44,6 @@ func TestMakeCollector2(t *testing.T) {
 	c, err := MakeCollector(configuration.DeviceConfig{
 		"localhost",
 		"cisco",
-		"",
 		"user",
 		"pass",
 		22,
@@ -64,7 +61,6 @@ func TestMakeCollector2(t *testing.T) {
 	c, err = MakeCollector(configuration.DeviceConfig{
 		"localhost",
 		"fake",
-		"",
 		"user",
 		"pass",
 		22,

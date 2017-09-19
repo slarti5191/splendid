@@ -22,7 +22,7 @@ func (s *Splendid) Run() {
 	s.config = configuration.GetConfig()
 
 	//var err error
-	//s.config, err = configuration.GetConfigs("sample.conf")
+	//s.config, err = configuration.GetConfigs("splendid.example.conf")
 	//if err != nil {
 	//	panic(err)
 	//}
@@ -80,7 +80,7 @@ func (s *Splendid) threadCollectors() {
 
 // RunCollector collects configs
 // Grab global configs as Conf, device specific commands as Cmd
-func runCollector(Dev configuration.DeviceConfig, Opts configuration.SplendidConfig) {
+func runCollector(Dev configuration.DeviceConfig, Opts configuration.Config) {
 	// iterate over Cmds, expect matching output, fail otherwise
 	fmt.Print(Dev, Opts)
 }
