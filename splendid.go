@@ -53,6 +53,7 @@ func (s *Splendid) threadWebserver() {
 
 // threadCollectors iterates through all device configs and runs the collectors.
 func (s *Splendid) threadCollectors() {
+	// Build our collectors.
 	s.cols = make([]collectors.Collector, len(s.config.Devices))
 	for i, c := range s.config.Devices {
 		collector, err := collectors.MakeCollector(c)
@@ -66,21 +67,16 @@ func (s *Splendid) threadCollectors() {
 	for {
 		fmt.Println("> Running Collector Loop")
 
-		// TODO: Use concurrency!
+		// TODO: Ensure the below is running concurrently. Implement max concurrency setting.
 		for _, c := range s.cols {
 			go func() {
+				//c.Collect()
+				//log.Printf("> Completed: %v", i)
 				result := c.Collect()
-				fmt.Println(result)
+				log.Println(result)
 			}()
 		}
 
 		time.Sleep(10 * time.Second)
 	}
-}
-
-// RunCollector collects configs
-// Grab global configs as Conf, device specific commands as Cmd
-func runCollector(Dev configuration.DeviceConfig, Opts configuration.Config) {
-	// iterate over Cmds, expect matching output, fail otherwise
-	fmt.Print(Dev, Opts)
 }
