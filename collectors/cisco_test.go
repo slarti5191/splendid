@@ -7,13 +7,12 @@ import (
 
 func TestMakeCisco(t *testing.T) {
 	c := makeCisco(configuration.DeviceConfig{
-		"localhost",
-		"cisco",
-		"user",
-		"pass",
-		22,
-		30,
-		30,
+		Name: "cisco",
+		Host: "localhost",
+		Type: "cisco",
+		User: "user",
+		Pass: "pass",
+		Port: 22,
 	})
 	s := c.Collect()
 	if s != "<xml>Example</xml>" {

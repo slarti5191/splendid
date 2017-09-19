@@ -56,6 +56,9 @@ func (s *Splendid) threadCollectors() {
 	// Build our collectors.
 	s.cols = make([]collectors.Collector, len(s.config.Devices))
 	for i, c := range s.config.Devices {
+		if c.Disabled {
+			log.Printf("Config disabled: %v", c.Name)
+		}
 		collector, err := collectors.MakeCollector(c)
 		if err != nil {
 			panic(err)
@@ -69,14 +72,13 @@ func (s *Splendid) threadCollectors() {
 
 		// TODO: Ensure the below is running concurrently. Implement max concurrency setting.
 		for _, c := range s.cols {
-			go func() {
-				//c.Collect()
-				//log.Printf("> Completed: %v", i)
+			go func(c collectors.Collector) {
 				result := c.Collect()
-				log.Println(result)
-			}()
+				log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
+			}(c)
 		}
 
-		time.Sleep(10 * time.Second)
+		// Sleep until time for the next check.
+		time.Sleep(s.config.Interval)
 	}
 }

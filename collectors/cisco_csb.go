@@ -7,7 +7,7 @@ import (
 )
 
 type devCiscoCsb struct {
-	config configuration.DeviceConfig
+	configuration.DeviceConfig
 }
 
 func (d devCiscoCsb) Collect() string {
@@ -15,7 +15,7 @@ func (d devCiscoCsb) Collect() string {
 	s.Ciphers = []string{"aes256-cbc", "aes128-cbc"}
 
 	log.Println("Attempting to connect...")
-	s.Connect(d.config.User, d.config.Pass, d.config.Host)
+	s.Connect(d.User, d.Pass, d.Host)
 	s.StartShell()
 
 	log.Println("Connected, showing version...")

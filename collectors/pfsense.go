@@ -6,12 +6,12 @@ import (
 )
 
 type devPfsense struct {
-	config configuration.DeviceConfig
+	configuration.DeviceConfig
 }
 
 func (d devPfsense) Collect() string {
 	s := new(utils.SSHRunner)
-	s.Connect(d.config.User, d.config.Pass, d.config.Host)
+	s.Connect(d.User, d.Pass, d.Host)
 
 	// TODO: Non-primary user, press the "8" key.
 	// Likely to need an SSH shell instead. Plus,

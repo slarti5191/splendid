@@ -28,7 +28,14 @@ func TestLoadMixedConfig(t *testing.T) {
 	expect.ConfigFile = "../test.conf"
 	// Device
 	expect.Devices = []DeviceConfig{
-		{"localhost", "pfsense", "pfuser", "pfpass", 22, 0, 0},
+		{
+			Name: "pfsense",
+			Host: "localhost",
+			Type: "pfsense",
+			User: "pfuser",
+			Pass: "pfpass",
+			Port: 22,
+		},
 	}
 
 	if !reflect.DeepEqual(config, expect) {
@@ -94,7 +101,14 @@ func TestLoadConfigFile(t *testing.T) {
 	expect.Timeout = 1337 * time.Second
 	expect.Concurrency = 4
 	expect.Devices = []DeviceConfig{
-		{"localhost", "pfsense", "pfuser", "pfpass", 22, 0, 0},
+		{
+			Name: "pfsense",
+			Host: "localhost",
+			Type: "pfsense",
+			User: "pfuser",
+			Pass: "pfpass",
+			Port: 22,
+		},
 	}
 
 	config := new(Config)

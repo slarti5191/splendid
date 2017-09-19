@@ -46,24 +46,29 @@ type Config struct {
 // CmwPass       string
 
 type DeviceConfig struct {
+	Name           string
 	Host           string
 	Type           string
 	User           string
 	Pass           string
 	Port           int
+	Disabled       bool
 	CustomTimeout  time.Duration
 	CommandTimeout time.Duration
 }
 
-// What is DeviceConfig.Target used for?
-// Target         string
+// GetName provides a simple implementation for the Collector interface.
+func (d DeviceConfig) GetName() string {
+	return d.Name
+}
 
+// getConfigDefaults provides reasonable defaults for Splendid!
 func getConfigDefaults() *Config {
 	return &Config{
 		false,
 		"splendid.conf",
 		30,
-		30 * time.Second,
+		300 * time.Second,
 		120 * time.Second,
 		false,
 		false,

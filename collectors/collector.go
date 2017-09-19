@@ -10,6 +10,7 @@ import (
 // It doesn't need to know anything else about the inner implementation.
 type Collector interface {
 	Collect() string
+	GetName() string
 }
 
 // MakeCollector will generate the appropriate collector based on the
