@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"github.com/slarti5191/splendid/utils"
 )
 
 // Two primary threads. Webserver and collectors.
@@ -76,6 +77,7 @@ func (s *Splendid) threadCollectors() {
 		for _, c := range s.cols {
 			go func(c collectors.Collector) {
 				result := c.Collect()
+				utils.WriteFile(result, c.GetName(), *s.config)
 				log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
 			}(c)
 		}

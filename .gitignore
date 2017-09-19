@@ -8,6 +8,8 @@ bin
 # Config files
 splendid.conf
 
+# Workspace
+workspace/
 # Test binary, build with `go test -c`
 *.test
 
