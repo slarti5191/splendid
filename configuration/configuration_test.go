@@ -51,7 +51,7 @@ func xTestFlags(t *testing.T) {
 	//args := []string{
 	//	"-f", "../test.conf",
 	//}
-	//conf := flagSet.String("g", "sample.conf", "Sample conf file.")
+	//conf := flagSet.String("g", "splendid.example.conf", "Sample conf file.")
 	//if err := flagSet.Parse(args); err != nil {
 	//	t.Fatal(err)
 	//}

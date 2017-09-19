@@ -9,7 +9,6 @@ func TestMakeCisco(t *testing.T) {
 	c := makeCisco(configuration.DeviceConfig{
 		"localhost",
 		"cisco",
-		"",
 		"user",
 		"pass",
 		22,

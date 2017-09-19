@@ -7,58 +7,77 @@ import (
 )
 
 type Config struct {
-	Debug            bool
-	ConfigFile       string
+	// Debug
+	Debug bool
+
+	// Config
+	ConfigFile string
+
+	// Collector Settings
 	Concurrency      int
-	DefaultUser      string
-	Workspace        string
+	Interval         time.Duration
+	Timeout          time.Duration
+	AllowInsecureSSH bool
+
+	// Git
+	GitPush bool
+
+	// User Settings
+	Workspace   string
+	DefaultUser string
+	DefaultPass string
+
+	// Mail
+	EmailEnabled bool
+	SmtpString   string
+	ToEmail      string
+	FromEmail    string
+
+	// Webserver
 	WebserverEnabled bool
+	HttpListen       string
+
 	// Devices
 	Devices []DeviceConfig
 }
 
+// Do we need these in Config?
+// UseSyslog bool
+// ExecutableDir string
+// DefaultMethod string
+// CmwPass       string
+
 type DeviceConfig struct {
 	Host           string
 	Type           string
-	Target         string
 	User           string
 	Pass           string
 	Port           int
-	Timeout        time.Duration
+	CustomTimeout  time.Duration
 	CommandTimeout time.Duration
 }
 
-type SplendidConfig struct {
-	Debug         bool
-	Interval      time.Duration
-	Timeout       time.Duration
-	GitPush       bool
-	Insecure      bool
-	Concurrency   int
-	HttpListen    string
-	HttpEnabled   bool
-	SmtpString    string
-	Workspace     string
-	ExecutableDir string
-	ToEmail       string
-	FromEmail     string
-	UseSyslog     bool
-	DefaultUser   string
-	DefaultPass   string
-	DefaultMethod string
-	CmwPass       string
-	Devices       []DeviceConfig
-	ConfigFile    string
-}
+// What is DeviceConfig.Target used for?
+// Target         string
 
-func getConfigDefaults() Config {
-	return Config{
+func getConfigDefaults() *Config {
+	return &Config{
 		false,
-		"sample.conf",
+		"splendid.conf",
 		30,
-		"",
-		"/workspace",
+		30 * time.Second,
+		120 * time.Second,
 		false,
+		false,
+		"/workspace",
+		"",
+		"",
+		false,
+		"smtp:port",
+		"",
+		"",
+		false,
+		"localhost:5002",
 		nil,
 	}
 }
@@ -86,7 +105,7 @@ func getConfigDefaults() Config {
 //		"none",
 //		"none",
 //		nil,
-//		"sample.conf",
+//		"splendid.example.conf",
 //	}
 //
 //	if configFile != "" {
@@ -120,6 +139,12 @@ func getConfigDefaults() Config {
 //return config, nil
 //}
 
+// mergeConfig was an attempt to merge one config into another config.
+// However, it's not very useful since all it really does is merge everything
+// into the first config. There is not a way to say "if this value is not set..."
+// because sometimes you WANT to merge a false or a zero value into the config.
+// So there is no way to distinguish a "nil" unset value (ZeroValue) and a
+// desired zero value...
 func (c *Config) mergeConfig(merge Config) {
 
 	mergeValue := reflect.ValueOf(merge)
@@ -161,58 +186,58 @@ func (c *Config) mergeConfig(merge Config) {
 }
 
 // Keeping the below for reference for the moment.
-func (c *SplendidConfig) flagUpdate(flags SplendidConfig, defaults SplendidConfig) {
-
-	//e, d, err := Compare(flags, defaults)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//log.Println(e)
-	//log.Println(d)
-	//os.Exit(0)
-
-	defaultValue := reflect.ValueOf(defaults)
-	//loadedValue := reflect.ValueOf(*c)
-	flagValue := reflect.ValueOf(flags)
-
-	configValue := reflect.ValueOf(c).Elem()
-
-	for i := 0; i < flagValue.NumField(); i++ {
-		// Grab default value and flag value.
-		v1 := defaultValue.Field(i)
-		v2 := flagValue.Field(i)
-
-		// Unwraps pointers if necessary.
-		v1 = reflect.Indirect(v1)
-		v2 = reflect.Indirect(v2)
-
-		// We don't support structs and slices via flag input.
-		if v1.Type().Kind() == reflect.Struct || v1.Type().Kind() == reflect.Slice {
-			continue
-		}
-
-		// Simple sanity checks.
-		if v1.Type() != v2.Type() {
-			log.Fatal("Expected types to match.")
-		}
-		if !v1.IsValid() || !v2.IsValid() {
-			log.Fatal("Expect valid values.")
-		}
-
-		// Check if something was set.
-		// TODO: Problem, explicitly set command line values that match default
-		// values are not picked up. Deferring to the config file value.
-		if v1.Interface() != v2.Interface() {
-			// If we have a zero value for the flag, skip it.
-			if v2.Interface() == reflect.Zero(v2.Type()).Interface() {
-				continue
-			}
-
-			//log.Printf("Override: %v", defaultValue.Type().Field(i).Name)
-			//log.Printf("%v -->> %v", v1.Interface(), v2.Interface())
-
-			// Override the config value with flag value.
-			configValue.Field(i).Set(v2)
-		}
-	}
-}
+//func (c *SplendidConfig) flagUpdate(flags SplendidConfig, defaults SplendidConfig) {
+//
+//	//e, d, err := Compare(flags, defaults)
+//	//if err != nil {
+//	//	panic(err)
+//	//}
+//	//log.Println(e)
+//	//log.Println(d)
+//	//os.Exit(0)
+//
+//	defaultValue := reflect.ValueOf(defaults)
+//	//loadedValue := reflect.ValueOf(*c)
+//	flagValue := reflect.ValueOf(flags)
+//
+//	configValue := reflect.ValueOf(c).Elem()
+//
+//	for i := 0; i < flagValue.NumField(); i++ {
+//		// Grab default value and flag value.
+//		v1 := defaultValue.Field(i)
+//		v2 := flagValue.Field(i)
+//
+//		// Unwraps pointers if necessary.
+//		v1 = reflect.Indirect(v1)
+//		v2 = reflect.Indirect(v2)
+//
+//		// We don't support structs and slices via flag input.
+//		if v1.Type().Kind() == reflect.Struct || v1.Type().Kind() == reflect.Slice {
+//			continue
+//		}
+//
+//		// Simple sanity checks.
+//		if v1.Type() != v2.Type() {
+//			log.Fatal("Expected types to match.")
+//		}
+//		if !v1.IsValid() || !v2.IsValid() {
+//			log.Fatal("Expect valid values.")
+//		}
+//
+//		// Check if something was set.
+//		// TODO: Problem, explicitly set command line values that match default
+//		// values are not picked up. Deferring to the config file value.
+//		if v1.Interface() != v2.Interface() {
+//			// If we have a zero value for the flag, skip it.
+//			if v2.Interface() == reflect.Zero(v2.Type()).Interface() {
+//				continue
+//			}
+//
+//			//log.Printf("Override: %v", defaultValue.Type().Field(i).Name)
+//			//log.Printf("%v -->> %v", v1.Interface(), v2.Interface())
+//
+//			// Override the config value with flag value.
+//			configValue.Field(i).Set(v2)
+//		}
+//	}
+//}

@@ -23,18 +23,23 @@ func GetConfig() *Config {
 
 // loadConfig fetches the various sources of configuration data, and returns the fully prepared config.
 func loadConfig() *Config {
-	config := new(Config)
+	// Parse command line flags
+	parseConfigFlags()
+
+	//config := new(Config)
 
 	// Fetch defaults
-	config.mergeConfig(getConfigDefaults())
+	//config.mergeConfig(getConfigDefaults())
 
-	// Fetch file
-	// Load INI
+	// Pull a copy of the defaults, and convert to a pointer.
+	config := getConfigDefaults()
+
+	// Load config data from INI file on top of default values.
 	configPath := configFlagsGetConfigPath()
 	mergeConfigFile(config, configPath)
 	//config.mergeConfig(getFileConfig(configPath))
 
-	// Fetch flags
+	// Fetch flags and merge on top of file+default values.
 	//config.mergeConfig(getConfigFlags())
 	mergeConfigFlags(config)
 
