@@ -1,65 +1,81 @@
 package configuration
 
 import (
-	"reflect"
 	"time"
 )
+
+type Config struct {
+	// Debug
+	Debug bool
+
+	// Config
+	ConfigFile string
+
+	// Collector Settings
+	Concurrency      int
+	Interval         time.Duration
+	Timeout          time.Duration
+	AllowInsecureSSH bool
+
+	// Git
+	GitPush bool
+
+	// User Settings
+	Workspace   string
+	DefaultUser string
+	DefaultPass string
+
+	// Mail
+	EmailEnabled bool
+	SmtpString   string
+	ToEmail      string
+	FromEmail    string
+
+	// Webserver
+	WebserverEnabled bool
+	HttpListen       string
+
+	// Devices
+	Devices []DeviceConfig
+}
+
+// Do we need these in Config?
+// UseSyslog bool
+// ExecutableDir string
+// DefaultMethod string
+// CmwPass       string
 
 type DeviceConfig struct {
 	Host           string
 	Type           string
-	Target         string
 	User           string
 	Pass           string
 	Port           int
-	Timeout        time.Duration
+	CustomTimeout  time.Duration
 	CommandTimeout time.Duration
 }
 
-type SplendidConfig struct {
-	Debug         bool
-	Interval      time.Duration
-	Timeout       time.Duration
-	GitPush       bool
-	Insecure      bool
-	Concurrency   int
-	HttpListen    string
-	HttpEnabled   bool
-	SmtpString    string
-	Workspace     string
-	ExecutableDir string
-	ToEmail       string
-	FromEmail     string
-	UseSyslog     bool
-	DefaultUser   string
-	DefaultPass   string
-	DefaultMethod string
-	CmwPass       string
-	Devices       []DeviceConfig
-	ConfigFile    string
-}
+// What is DeviceConfig.Target used for?
+// Target         string
 
-// GetConfigs loads the config file, then parses flags
-func GetConfigs(configFile string) (*SplendidConfig, error) {
-	c, err := loadConfig(configFile)
-	if err != nil {
-		return nil, err
+func getConfigDefaults() *Config {
+	return &Config{
+		false,
+		"splendid.conf",
+		30,
+		30 * time.Second,
+		120 * time.Second,
+		false,
+		false,
+		"/workspace",
+		"",
+		"",
+		false,
+		"smtp:port",
+		"",
+		"",
+		false,
+		"localhost:5002",
+		nil,
 	}
-	flags, err := parseConfigFlags(c)
-	conf := c.flagUpdate(*flags)
-	return &conf, nil
-}
-
-func (c SplendidConfig) flagUpdate(f SplendidConfig) (conf SplendidConfig) {
-	old := reflect.ValueOf(c)
-	new := reflect.ValueOf(f)
-	final := reflect.ValueOf(&conf).Elem()
-	for i := 0; i < old.NumField(); i++ {
-		if !new.Field(i).IsValid() {
-			final.Field(i).Set(new.Field(i))
-		} else {
-			final.Field(i).Set(old.Field(i))
-		}
-	}
-	return
 }

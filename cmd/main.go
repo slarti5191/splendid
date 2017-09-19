@@ -7,5 +7,6 @@ import (
 // main initializes the configuration
 // and kicks off the collectors
 func main() {
-	splendid.Init()
+	s := new(splendid.Splendid)
+	s.Run()
 }

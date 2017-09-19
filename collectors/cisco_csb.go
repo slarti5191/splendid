@@ -1,20 +1,21 @@
 package collectors
 
 import (
+	"github.com/slarti5191/splendid/configuration"
 	"github.com/slarti5191/splendid/utils"
 	"log"
 )
 
 type devCiscoCsb struct {
+	config configuration.DeviceConfig
 }
 
 func (d devCiscoCsb) Collect() string {
-	//ssh.Config -> Ciphers: []string{"aes128-cbc", "aes256-cbc", "none"},
 	s := new(utils.SSHRunner)
 	s.Ciphers = []string{"aes256-cbc", "aes128-cbc"}
 
 	log.Println("Attempting to connect...")
-	s.Connect("splendid", "Splendid1", "switch.lan.hdthings.com")
+	s.Connect(d.config.User, d.config.Pass, d.config.Host)
 	s.StartShell()
 
 	log.Println("Connected, showing version...")
@@ -31,6 +32,6 @@ func (d devCiscoCsb) Collect() string {
 	return result
 }
 
-func makeCiscoCsb() Collector {
-	return new(devCiscoCsb)
+func makeCiscoCsb(d configuration.DeviceConfig) Collector {
+	return &devCiscoCsb{d}
 }
