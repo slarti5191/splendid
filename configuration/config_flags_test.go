@@ -46,4 +46,22 @@ func TestFlagsBasic(t *testing.T) {
 	}
 }
 
-// TODO: Test for mergeConfigFlags and implement more flags.
+// Test merging a value for every config flag.
+func TestMergeAllConfigFlags(t *testing.T) {
+	setOSFlagsForTesting([]string{
+		"splendid",
+		"-c", "../test.conf",
+		"-p", "5",
+		"-i", "75s",
+		"-t", "85s",
+		"--debug",
+		"-x",
+		"--smtp", "smtp.example:3333",
+		"-w",
+		"--listen", "web.example:4444",
+	})
+
+	parseConfigFlags()
+	config := new(Config)
+	mergeConfigFlags(config)
+}

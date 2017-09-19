@@ -3,6 +3,7 @@ package configuration
 import (
 	"flag"
 	"log"
+	"time"
 )
 
 func parseConfigFlags() {
@@ -10,20 +11,50 @@ func parseConfigFlags() {
 
 	flag.String("c", defaults.ConfigFile, "Config file name.")
 	flag.Int("p", defaults.Concurrency, "Parallel concurrent threads to use for collection.")
-
-	// Interval and Timeout
 	flag.Duration("i", defaults.Interval, "Interval in seconds between run calls.")
 	flag.Duration("t", defaults.Timeout, "Timeout default in seconds to wait for collection to finish.")
-
 	flag.Bool("debug", defaults.Debug, "Enable DEBUG flag for development.")
 	flag.Bool("x", defaults.AllowInsecureSSH, "Allow untrusted SSH keys.")
-
 	flag.String("smtp", defaults.SmtpString, "SMTP connection string.")
-
 	flag.Bool("w", defaults.WebserverEnabled, "Run a web status server.")
 	flag.String("listen", defaults.HttpListen, "Host and port to use for HTTP status server.")
 
 	flag.Parse()
+}
+
+// mergeConfigFlags maps the flag values back onto Config.
+// There ought to be a more efficient way to handle this when
+// combined with the above function for defining and parsing
+// the flags. However, it is not apparent how to easily tell whether
+// a flag was explicitly set to a default value or not. Plus,
+// some other edge case considerations.
+func mergeConfigFlags(config *Config) {
+	flag.Visit(func(flagVal *flag.Flag) {
+		switch flagVal.Name {
+		// These should be in the same order that the flags above are declared.
+		case "c":
+			config.ConfigFile = flagVal.Value.(flag.Getter).Get().(string)
+		case "p":
+			config.Concurrency = flagVal.Value.(flag.Getter).Get().(int)
+		case "i":
+			config.Interval = flagVal.Value.(flag.Getter).Get().(time.Duration)
+		case "t":
+			config.Timeout = flagVal.Value.(flag.Getter).Get().(time.Duration)
+		case "debug":
+			config.Debug = flagVal.Value.(flag.Getter).Get().(bool)
+		case "x":
+			config.AllowInsecureSSH = flagVal.Value.(flag.Getter).Get().(bool)
+		case "smtp":
+			config.SmtpString = flagVal.Value.(flag.Getter).Get().(string)
+		case "w":
+			config.WebserverEnabled = flagVal.Value.(flag.Getter).Get().(bool)
+		case "listen":
+			config.HttpListen = flagVal.Value.(flag.Getter).Get().(string)
+		// Fail if not defined.
+		default:
+			log.Fatalf("Flag merge not configured for %v", flagVal)
+		}
+	})
 }
 
 func configFlagsGetConfigPath() string {
@@ -46,21 +77,4 @@ func configFlagsGetConfigPath() string {
 	}
 
 	return configPath
-}
-
-func mergeConfigFlags(config *Config) {
-	flag.Visit(func(flagVal *flag.Flag) {
-		switch flagVal.Name {
-		case "c":
-			config.ConfigFile = flagVal.Value.(flag.Getter).Get().(string)
-			//config.ConfigFile = string(flag.Value)
-		case "p":
-			config.Concurrency = flagVal.Value.(flag.Getter).Get().(int)
-		case "debug":
-			config.Debug = flagVal.Value.(flag.Getter).Get().(bool)
-			// TODO: MORE!
-		default:
-			log.Fatalf("Flag merge not configured for %v", flagVal)
-		}
-	})
 }
