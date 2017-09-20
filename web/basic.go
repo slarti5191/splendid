@@ -28,6 +28,7 @@ func renderTemplate(w http.ResponseWriter, c *configuration.Config) {
 	}
 }
 
+// RunTheServer kicks off the http listener.
 func RunTheServer() {
 	start = time.Now()
 
