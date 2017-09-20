@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"os"
 	"github.com/slarti5191/splendid/configuration"
+	"os"
 )
 
 func WriteFile(c string, name string, s configuration.Config) {

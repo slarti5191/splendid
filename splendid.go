@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"github.com/slarti5191/splendid/collectors"
 	"github.com/slarti5191/splendid/configuration"
+	"github.com/slarti5191/splendid/utils"
+	"github.com/slarti5191/splendid/web"
 	"log"
 	"os"
 	"time"
-	"github.com/slarti5191/splendid/utils"
 )
 
 // Two primary threads. Webserver and collectors.
@@ -36,20 +37,10 @@ func (s *Splendid) Run() {
 
 	// Kickstart the webserver if enabled.
 	if s.config.WebserverEnabled {
-		go s.threadWebserver()
+		go web.RunTheServer()
 	}
 	// Kickstart the main collector thread.
 	s.threadCollectors()
-}
-
-// threadWebserver is a placeholder for what will someday be a webserver.
-func (s *Splendid) threadWebserver() {
-	loopDelay := 5 * time.Second
-	for {
-		fmt.Println("> Webserver code on another branch.")
-		time.Sleep(loopDelay)
-		loopDelay *= 5
-	}
 }
 
 // threadCollectors iterates through all device configs and runs the collectors.
