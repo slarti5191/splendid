@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/slarti5191/splendid/collectors"
 	"github.com/slarti5191/splendid/configuration"
+	"github.com/slarti5191/splendid/utils"
 	"log"
 	"os"
 	"time"
-	"github.com/slarti5191/splendid/utils"
 )
 
 // Two primary threads. Webserver and collectors.

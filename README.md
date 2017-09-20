@@ -3,7 +3,7 @@ Splendid - Configuration Tracking for Network Devices
 
 Splendid helps track changes and backup network device configurations.
 
-[![Build Status](https://travis-ci.org/slarti5191/splendid.png)](https://travis-ci.org/slarti5191/splendid)
+[![Build Status](https://travis-ci.org/slarti5191/splendid.png)](https://travis-ci.org/slarti5191/splendid) [![Go Report Card](https://goreportcard.com/badge/github.com/slarti5191/splendid)](https://goreportcard.com/report/github.com/slarti5191/splendid)
 
 Features
 --------
