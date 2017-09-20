@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// WriteFile persists the pulled device strings to disk.
 func WriteFile(c string, name string, s configuration.Config) {
 	var configPath string
 	configPath = s.Workspace + "/" + name

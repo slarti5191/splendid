@@ -14,6 +14,7 @@ import (
 // Two primary threads. Webserver and collectors.
 const version = "0.0.0"
 
+// Splendid is the main container used to run the application.
 type Splendid struct {
 	config *configuration.Config
 	cols   []collectors.Collector

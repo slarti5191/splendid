@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Config holds the general application settings.
 type Config struct {
 	// Debug
 	Debug bool
@@ -39,12 +40,7 @@ type Config struct {
 	Devices []DeviceConfig
 }
 
-// Do we need these in Config?
-// UseSyslog bool
-// ExecutableDir string
-// DefaultMethod string
-// CmwPass       string
-
+// DeviceConfig holds the device specific settings.
 type DeviceConfig struct {
 	Name           string
 	Host           string

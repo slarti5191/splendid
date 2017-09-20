@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// SSHRunner holds the persistent pieces of a specific SSH device connection.
 type SSHRunner struct {
 	conn     *ssh.Client
 	sess     *ssh.Session
