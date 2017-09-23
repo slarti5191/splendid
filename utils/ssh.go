@@ -18,7 +18,7 @@ type SSHRunner struct {
 }
 
 // Connect to the SSH Create the initial connection.
-func (s *SSHRunner) Connect(user, pass, host string) {
+func (s *SSHRunner) Connect(user, pass, host string) *ssh.Client{
 	// Config for testing.
 	config := &ssh.ClientConfig{
 		User: user,
@@ -43,15 +43,16 @@ func (s *SSHRunner) Connect(user, pass, host string) {
 	if err != nil {
 		log.Fatalf("Failed to dial: %s", err)
 	}
-
+	// Start a new session for the connection.
+	//s.sess, err = s.conn.NewSession()
+	//if err != nil {
+	//	log.Fatalf("Failed to create session: %s", err)
+	//}
+	// Spawn expect
+	//defer e.Close()
 	// Prematurely closes the connection when the function loses scope.
 	//defer conn.Close()
-
-	// Start a new session for the connection.
-	s.sess, err = s.conn.NewSession()
-	if err != nil {
-		log.Fatalf("Failed to create session: %s", err)
-	}
+	return s.conn
 }
 
 // StartShell must be called once before running ShellCmd.
