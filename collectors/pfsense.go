@@ -12,10 +12,17 @@ type devPfsense struct {
 
 // Collect gathers config.xml from pfSense
 func (d devPfsense) Collect() string {
+	var cmd []string
 	// Regex matching our config block
 	var pf = regexp.MustCompile(`<pfsense>[\s\S]*?<\/pfsense>`)
 	// Commands we need to run
-	cmd := []string{"8", "cat /conf/config.xml", "exit", "0"}
+	// commands are different for "admin" user
+	switch d.User {
+	case "admin":
+		cmd = append(cmd, "8", "cat /conf/config.xml", "exit", "0")
+	default:
+		cmd = append(cmd, "cat /conf/config.xml", "exit")
+	}
 	// Set up SSH
 	s := new(utils.SSHRunner)
 	// Connect
