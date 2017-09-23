@@ -18,9 +18,9 @@ func (d devCiscoCsb) Collect() string {
 	// Set up SSH
 	s := new(utils.SSHRunner)
 	// Connect
-	con := s.Connect(d.User, d.Pass, d.Host)
+	s.Connect(d.User, d.Pass, d.Host)
 	// Return our config
-	return s.Gather(con, cmd, csb)
+	return s.Gather(cmd, csb)
 }
 
 func makeCiscoCsb(d configuration.DeviceConfig) Collector {

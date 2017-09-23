@@ -19,9 +19,9 @@ func (d devPfsense) Collect() string {
 	// Set up SSH
 	s := new(utils.SSHRunner)
 	// Connect
-	con := s.Connect(d.User, d.Pass, d.Host)
+	s.Connect(d.User, d.Pass, d.Host)
 	// Return our config
-	return s.Gather(con, cmd, pf)
+	return s.Gather(cmd, pf)
 }
 
 func makePfsense(d configuration.DeviceConfig) Collector {

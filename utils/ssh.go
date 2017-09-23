@@ -16,7 +16,7 @@ type SSHRunner struct {
 }
 
 // Connect to the SSH Create the initial connection.
-func (s *SSHRunner) Connect(user, pass, host string) *ssh.Client {
+func (s *SSHRunner) Connect(user, pass, host string) {
 	// Config for testing.
 	config := &ssh.ClientConfig{
 		User: user,
@@ -41,28 +41,29 @@ func (s *SSHRunner) Connect(user, pass, host string) *ssh.Client {
 	if err != nil {
 		log.Fatalf("Failed to dial: %s", err)
 	}
-
-	return s.conn
 }
 
 // Gather sends commands over SSH and returns a match to m (regex) defined in our collector
-func (s *SSHRunner) Gather(c *ssh.Client, cmd []string, m *regexp.Regexp) string {
+func (s *SSHRunner) Gather(cmd []string, m *regexp.Regexp) string {
 	// Spawn expect
-	e, _, err := expect.SpawnSSH(c, 10*time.Second)
+	e, _, err := expect.SpawnSSH(s.conn, 10*time.Second)
 	if err != nil {
-		log.Fatalf("Failed to spawn Expect")
+		log.Fatalf("Failed to spawn expect: %v", err)
 	}
 	defer e.Close()
 
 	// Send each command
 	for c := range cmd {
-		e.Send(cmd[c] + "\n")
+		err := e.Send(cmd[c] + "\n")
+		if err != nil {
+			log.Fatalf("Error sending command %v: %v", c, err)
+		}
 	}
 
 	// Wait for a match to "m" (regex passed from collector)
 	_, match, err := e.Expect(m, 10*time.Second)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error matching config: %v", err)
 	}
 
 	// return config block
