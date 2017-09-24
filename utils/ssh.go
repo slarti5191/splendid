@@ -129,21 +129,21 @@ func (s *SSHRunner) shellRunner(w io.Writer, r io.Reader) (chan<- string, <-chan
 
 	go func() {
 		var (
-			t      int
+			//t      int
 			result string
 		)
 		for {
 			str := s.readDelayed(r)
 			n := len(str)
 			result += str
-			t += n
+			//t += n
 			//log.Printf("Read: [+%v / %v]\n", n, t)
 			if n == 0 {
 				//log.Printf("ReadReturn: %v\n", result)
 				out <- result
 				// Reset running result.
 				result = ""
-				t = 0
+				//t = 0
 			}
 		}
 	}()

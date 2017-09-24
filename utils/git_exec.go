@@ -102,6 +102,9 @@ func (g *Git) GitDiff3(filename string) string {
 	}
 
 	s, err := w.Status()
+	if err != nil {
+		panic(err)
+	}
 	fs := s.File("test")
 
 	log.Println(s.String())
