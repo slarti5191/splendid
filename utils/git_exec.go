@@ -4,9 +4,25 @@ import (
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 	"log"
+	"os/exec"
 )
 
 // Shim using exec until we determine the best native Go implementation.
+
+// GitExecDiff uses os/exec to pull a git diff.
+func GitExecDiff(path, filename string) (string, error) {
+	// Prep the command.
+	cmd := exec.Command("git", "diff", "-U4", filename)
+	// Switch to the workspace folder.
+	cmd.Dir = path
+	// Run!
+	diff, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return string(diff), err
+}
 
 // Work In Progress -- attempts to use go-git
 

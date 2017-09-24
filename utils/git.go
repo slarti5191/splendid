@@ -35,30 +35,27 @@ func (g *Git) Open() error {
 	return nil
 }
 
-// GitDiffs string for pending changes.
-func (g *Git) GitDiffs() {
-
-}
-
-// GitCommit any changes found.
-func (g *Git) GitCommit() error {
+// GitCommit any changes found, and returns a string of diffs.
+func (g *Git) GitCommit() ([]string, error) {
 	w, err := g.Repo.Worktree()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	s, err := w.Status()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if s.IsClean() {
 		// Nothing to do
 		log.Println("No changes.")
-		return nil
+		return nil, nil
 	}
-	//log.Println(s.String())
 
 	// Walk through the modified files.
+	// - Record the changes.
+	// - Add, and commit everything.
+	var changes []string
 	for e, ss := range s {
 		switch ss.Worktree {
 		case git.Untracked:
@@ -66,6 +63,16 @@ func (g *Git) GitCommit() error {
 			w.Add(e)
 		case git.Modified:
 			log.Printf("Modified: %v\n", e)
+
+			// TODO: Uses exec.Command
+			// Use os/exec to pull the diff.
+			change, err := GitExecDiff(g.Path, e)
+			if err != nil {
+				panic(err)
+			}
+			changes = append(changes, change)
+
+			// Add only after recording changes.
 			w.Add(e)
 		default:
 			log.Printf("Unhandled: [%v] %v", string(ss.Worktree), e)
@@ -80,11 +87,13 @@ func (g *Git) GitCommit() error {
 		},
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("Committed: %v", hash)
-	return nil
+	log.Printf("Changes:\n%v\n", changes)
+
+	return changes, nil
 }
 
 // GitHash for the filename.

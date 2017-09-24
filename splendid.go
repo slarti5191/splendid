@@ -88,9 +88,8 @@ func (s *Splendid) threadCollectors() {
 		waitGroup.Wait()
 		log.Println("> Devices collected. Processing diffs.")
 
-		s.git.GitDiffs()
-
-		err := s.git.GitCommit()
+		// TODO: Email the changes.
+		_, err := s.git.GitCommit()
 		if err != nil {
 			panic(err)
 		}
