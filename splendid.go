@@ -79,26 +79,51 @@ func (s *Splendid) threadCollectors() {
 	// Main collector loop.
 	var waitGroup sync.WaitGroup
 	for {
-		log.Printf("> Running %v Collector(s)", len(s.cols))
+		log.Printf("> Running %v Collector(s)\n", len(s.cols))
 
 		for _, c := range s.cols {
 			waitGroup.Add(1)
 			go s.runCollector(c, &waitGroup)
 		}
 		waitGroup.Wait()
+		log.Println("> Devices collected. Processing diffs.")
+
+		s.git.GitDiffs()
+
+		err := s.git.GitCommit()
+		if err != nil {
+			panic(err)
+		}
 
 		// Sleep until time for the next check.
-		log.Printf("> Collection complete. Next run in %v", s.config.Interval)
+		log.Printf("> Collection routine complete. Next run in %v\n", s.config.Interval)
 		time.Sleep(s.config.Interval)
 	}
 }
 
+var failCounts = make(map[collectors.Collector]int)
+
 func (s *Splendid) runCollector(c collectors.Collector, waitGroup *sync.WaitGroup) {
 	log.Printf("Starting [%v]", c.GetName())
-	result := c.Collect()
 
-	utils.WriteFile(result, c.GetName(), *s.config)
-	log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
+	result := c.Collect()
+	if result == "" {
+		// Happens sometimes... do not write an empty file.
+		log.Printf("No result: [%v] was empty.\n", c.GetName())
+
+		// Track fails for this collector.
+		failCounts[c]++
+		if failCounts[c] > 2 {
+			// It appears we have a problem. (Email?)
+			log.Fatalf("[%v] Failed three times in a row.", c.GetName())
+		}
+	} else {
+		// Ensure reset of fail counts for this collector.
+		failCounts[c] = 0
+		utils.WriteFile(result, c.GetName(), *s.config)
+		log.Printf("Completed [%v] Len = %v\n", c.GetName(), len(result))
+	}
+
 	waitGroup.Done()
 }
 
