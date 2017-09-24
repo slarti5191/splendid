@@ -16,6 +16,7 @@ const version = "0.0.0"
 // Splendid is the main container used to run the application.
 type Splendid struct {
 	config *configuration.Config
+	git    *utils.Git
 	cols   []collectors.Collector
 }
 
@@ -23,16 +24,19 @@ type Splendid struct {
 func (s *Splendid) Run() {
 	s.config = configuration.GetConfig()
 
-	//var err error
-	//s.config, err = configuration.GetConfigs("splendid.example.conf")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
 	if s.config.Debug {
 		log.Println("DEBUG ENABLED: Dumping config and exiting.")
 		log.Println(s.config)
 		os.Exit(0)
+	}
+
+	// Initialize GIT
+	s.git = &utils.Git{
+		Path: s.config.Workspace,
+	}
+	err := s.git.Open()
+	if err != nil {
+		log.Fatalf("Could not open GIT repo: %v", err)
 	}
 
 	// Kickstart the webserver if enabled.
@@ -68,15 +72,32 @@ func (s *Splendid) threadCollectors() {
 		}
 
 		for _, c := range s.cols {
-			go func(c collectors.Collector) {
-				//log.Printf("Starting [%v]", c.GetName())
-				result := c.Collect()
-				utils.WriteFile(result, c.GetName(), *s.config)
-				log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
-			}(c)
+			go s.runCollector(c)
 		}
 
 		// Sleep until time for the next check.
 		time.Sleep(s.config.Interval)
+	}
+}
+
+func (s *Splendid) runCollector(c collectors.Collector) {
+	log.Printf("Starting [%v]", c.GetName())
+	result := c.Collect()
+
+	utils.WriteFile(result, c.GetName(), *s.config)
+	log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
+}
+
+func (s *Splendid) runCollectorGit(c collectors.Collector) {
+	log.Printf("Starting [%v]", c.GetName())
+	result := c.Collect()
+
+	utils.WriteFile(result, c.GetName(), *s.config)
+	log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
+	//diff := s.git.GitHash(c.GetName())
+	diff := s.git.GitDiff(c.GetName())
+	//diff := s.git.GitDiff("test")
+	if diff != "" {
+		log.Printf("Discovered a change:\n%v\n", diff)
 	}
 }

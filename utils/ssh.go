@@ -17,6 +17,7 @@ type SSHRunner struct {
 	shellIn  chan<- string
 	shellOut <-chan string
 	Ciphers  []string
+	ReadWait time.Duration
 }
 
 // Connect to the SSH Create the initial connection.
@@ -77,7 +78,7 @@ func (s *SSHRunner) StartShell() {
 	if err != nil {
 		panic(err)
 	}
-	in, out := shellRunner(w, r)
+	in, out := s.shellRunner(w, r)
 	//if err := session.Start("/bin/sh"); err != nil {
 	if err := s.sess.Shell(); err != nil {
 		log.Fatal(err)
@@ -116,7 +117,7 @@ func match(conf string, re *regexp.Regexp) string {
 
 // shellRunner is an internal function used by SSHRunner to manage the input
 // and output of a shell.
-func shellRunner(w io.Writer, r io.Reader) (chan<- string, <-chan string) {
+func (s *SSHRunner) shellRunner(w io.Writer, r io.Reader) (chan<- string, <-chan string) {
 	in := make(chan string, 1)
 	out := make(chan string, 1)
 	go func() {
@@ -132,7 +133,7 @@ func shellRunner(w io.Writer, r io.Reader) (chan<- string, <-chan string) {
 			result string
 		)
 		for {
-			str := ReadDelayed(r)
+			str := s.readDelayed(r)
 			n := len(str)
 			result += str
 			t += n
@@ -155,7 +156,7 @@ func shellRunner(w io.Writer, r io.Reader) (chan<- string, <-chan string) {
 // some of the input when we timeout.
 // TODO: Attempted to move "buf" to the SSHRunner, but realized "n" also needs to be
 // moved since the function returns while the previous read is blocked.
-func ReadDelayed(r io.Reader) string {
+func (s *SSHRunner) readDelayed(r io.Reader) string {
 	out := make(chan string, 1)
 	go func() {
 		var (
@@ -172,7 +173,7 @@ func ReadDelayed(r io.Reader) string {
 	select {
 	case str := <-out:
 		return str
-	case <-time.After(3 * time.Second):
+	case <-time.After(s.ReadWait):
 		//log.Printf("Timed Out!\n")
 		return ""
 	}
