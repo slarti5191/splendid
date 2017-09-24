@@ -14,7 +14,8 @@ func (d devCiscoCsb) Collect() string {
 	s := new(utils.SSHRunner)
 	s.Ciphers = []string{"aes256-cbc", "aes128-cbc"}
 	// Regex matching our config block
-	var csb = regexp.MustCompile(`#[\s\S]*?#`) // This likely doesn't work, untested regex
+	// var csb = regexp.MustCompile(`#[\s\S]*?#`) // This likely doesn't work, untested regex
+	var csb = regexp.MustCompile(`#([\s\S]*)#`)
 	// Commands we need to run
 	cmd := []string{"terminal datadump", "show running-config", "exit"}
 	// Set up SSH
