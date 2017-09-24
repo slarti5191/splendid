@@ -16,6 +16,7 @@ func parseConfigFlags() {
 	flag.Bool("debug", defaults.Debug, "Enable DEBUG flag for development.")
 	flag.Bool("x", defaults.AllowInsecureSSH, "Allow untrusted SSH keys.")
 	flag.String("smtp", defaults.SMTPString, "SMTP connection string.")
+	flag.Bool("dc", defaults.DisableCollection, "Disable collector processing.")
 	flag.Bool("w", defaults.WebserverEnabled, "Run a web status server.")
 	flag.String("listen", defaults.HTTPListen, "Host and port to use for HTTP status server.")
 
@@ -42,6 +43,8 @@ func mergeConfigFlags(config *Config) {
 			config.Timeout = flagVal.Value.(flag.Getter).Get().(time.Duration)
 		case "debug":
 			config.Debug = flagVal.Value.(flag.Getter).Get().(bool)
+		case "dc":
+			config.DisableCollection = flagVal.Value.(flag.Getter).Get().(bool)
 		case "x":
 			config.AllowInsecureSSH = flagVal.Value.(flag.Getter).Get().(bool)
 		case "smtp":

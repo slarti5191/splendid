@@ -22,9 +22,10 @@ func TestFlagsBasic(t *testing.T) {
 		"-p", "5",
 		"-i", "75s",
 		"-t", "85s",
-		"-x=true",
+		"-x=true", // Explicitly pass true.
+		"-dc",     // Implicitly pass true.
 		"--smtp", "smtp.example:3333",
-		"-w=true",
+		"-w",
 		"--listen", "web.example:4444",
 	}
 	setOSFlagsForTesting(args)
@@ -40,7 +41,7 @@ func TestFlagsBasic(t *testing.T) {
 		found = append(found, flag.Name)
 	})
 	// Flags sorts and calls "Visit" alphabetically.
-	expect := []string{"c", "i", "listen", "p", "smtp", "t", "w", "x"}
+	expect := []string{"c", "dc", "i", "listen", "p", "smtp", "t", "w", "x"}
 	if !reflect.DeepEqual(found, expect) {
 		t.Fatalf("Flags not parsed properly.\nFound: %s\nExpected: %s", found, expect)
 	}
@@ -56,6 +57,7 @@ func TestMergeAllConfigFlags(t *testing.T) {
 		"-t", "85s",
 		"--debug",
 		"-x",
+		"-dc",
 		"--smtp", "smtp.example:3333",
 		"-w",
 		"--listen", "web.example:4444",

@@ -13,10 +13,11 @@ type Config struct {
 	ConfigFile string
 
 	// Collector Settings
-	Concurrency      int
-	Interval         time.Duration
-	Timeout          time.Duration
-	AllowInsecureSSH bool
+	Concurrency       int
+	Interval          time.Duration
+	Timeout           time.Duration
+	AllowInsecureSSH  bool
+	DisableCollection bool
 
 	// Git
 	GitPush bool
@@ -66,6 +67,7 @@ func getConfigDefaults() *Config {
 		30,
 		300 * time.Second,
 		120 * time.Second,
+		false,
 		false,
 		false,
 		"/workspace",

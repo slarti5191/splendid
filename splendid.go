@@ -7,6 +7,7 @@ import (
 	"github.com/slarti5191/splendid/web"
 	"log"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -41,7 +42,13 @@ func (s *Splendid) Run() {
 
 	// Kickstart the webserver if enabled.
 	if s.config.WebserverEnabled {
-		go web.RunTheServer()
+		if s.config.DisableCollection {
+			// Collection is disabled, run on the main thread.
+			web.RunTheServer()
+		} else {
+			// Start coroutine for webserver.
+			go web.RunTheServer()
+		}
 	}
 	// Kickstart the main collector thread.
 	s.threadCollectors()
@@ -64,28 +71,35 @@ func (s *Splendid) threadCollectors() {
 		s.cols = append(s.cols, collector)
 	}
 
+	// If no collectors were built, we have a problem.
+	if len(s.cols) == 0 {
+		log.Fatal("Must set DisableCollection or pass -dc flag if no collectors are enabled.")
+	}
+
 	// Main collector loop.
+	var waitGroup sync.WaitGroup
 	for {
-		// Silence if all collectors are disabled.
-		if len(s.cols) > 0 {
-			log.Printf("> Running %v Collector(s)", len(s.cols))
-		}
+		log.Printf("> Running %v Collector(s)", len(s.cols))
 
 		for _, c := range s.cols {
-			go s.runCollector(c)
+			waitGroup.Add(1)
+			go s.runCollector(c, &waitGroup)
 		}
+		waitGroup.Wait()
 
 		// Sleep until time for the next check.
+		log.Printf("> Collection complete. Next run in %v", s.config.Interval)
 		time.Sleep(s.config.Interval)
 	}
 }
 
-func (s *Splendid) runCollector(c collectors.Collector) {
+func (s *Splendid) runCollector(c collectors.Collector, waitGroup *sync.WaitGroup) {
 	log.Printf("Starting [%v]", c.GetName())
 	result := c.Collect()
 
 	utils.WriteFile(result, c.GetName(), *s.config)
 	log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))
+	waitGroup.Done()
 }
 
 func (s *Splendid) runCollectorGit(c collectors.Collector) {
