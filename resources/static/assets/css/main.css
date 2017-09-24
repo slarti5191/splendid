@@ -1,3 +1,8 @@
+/* Move down content because we have a fixed navbar that is 3.5rem tall */
+body {
+    padding-top: 3.5rem;
+}
+
 h1 {
     color:#009;
 }
@@ -5,3 +10,4 @@ h1 {
 .disabled {
     color:#900;
 }
+

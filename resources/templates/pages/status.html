@@ -1,24 +1,37 @@
 {{ define "title" }}Example Splendid Title{{ end }}
 {{ define "body" }}
 
-<h1>Splendid Status</h1>
-
-<p>Config File: <strong>{{.Config.ConfigFile}}</strong></p>
-<p>Interval: <strong>{{.Config.Interval}}</strong></p>
-<p>Timeout: <strong>{{.Config.Timeout}}</strong></p>
-<p>Concurrency: <strong>{{.Config.Concurrency}}</strong></p>
-
-{{ range $key, $value := .Config.Devices }}
-    <hr>
-
-    <div class="{{if $value.Disabled}}disabled{{end}}">
-        <ul>
-            {{if $value.Disabled}}<li>Disabled: <strong>{{ $value.Disabled }}</strong></li>{{end}}
-            <li>Name: <strong>{{ $value.Name }}</strong></li>
-            <li>Type: <strong>{{ $value.Type }}</strong></li>
-            <li>Host: <strong>{{ $value.Host }}</strong></li>
-        </ul>
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">Splendid Status</h1>
+        <p>
+            Quick status page.
+            Summary of {{ len .Config.Devices }} configured devices.
+        </p>
+        <p>
+            Config File: <strong>{{.Config.ConfigFile}}</strong><br>
+            Interval: <strong>{{.Config.Interval}}</strong><br>
+            Timeout: <strong>{{.Config.Timeout}}</strong><br>
+            Concurrency: <strong>{{.Config.Concurrency}}</strong>
+        </p>
     </div>
-{{ end }}
+</div>
+
+<div class="container">
+    <div class="row">
+        {{ range $key, $value := .Config.Devices }}
+        <div class="col-md-4 {{if $value.Disabled}}disabled{{end}}">
+            <h2>{{ $value.Name }}</h2>
+            <ul>
+                {{if $value.Disabled}}<li>Disabled: <strong>{{ $value.Disabled }}</strong></li>{{end}}
+                <li>Name: <strong>{{ $value.Name }}</strong></li>
+                <li>Type: <strong>{{ $value.Type }}</strong></li>
+                <li>Host: <strong>{{ $value.Host }}</strong></li>
+            </ul>
+            <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        {{ end }}
+    </div>
+</div>
 
 {{ end }}
