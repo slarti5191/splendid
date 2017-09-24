@@ -7,15 +7,15 @@ import (
 
 func TestMakeCollector(t *testing.T) {
 	c, err := MakeCollector(configuration.DeviceConfig{
-		"testdevice",
-		"localhost",
-		"cisco",
-		"user",
-		"pass",
-		22,
-		false,
-		30,
-		30,
+		Name:           "testdevice",
+		Host:           "localhost",
+		Type:           "cisco",
+		User:           "user",
+		Pass:           "pass",
+		Port:           22,
+		Disabled:       false,
+		CustomTimeout:  30,
+		CommandTimeout: 30,
 	})
 	if err != nil {
 		t.Errorf("Making Cisco should not error.")
@@ -26,15 +26,15 @@ func TestMakeCollector(t *testing.T) {
 	}
 
 	c, err = MakeCollector(configuration.DeviceConfig{
-		"testdevice",
-		"localhost",
-		"fake",
-		"user",
-		"pass",
-		22,
-		false,
-		30,
-		30,
+		Name:           "testdevice",
+		Host:           "localhost",
+		Type:           "cisco",
+		User:           "user",
+		Pass:           "pass",
+		Port:           22,
+		Disabled:       false,
+		CustomTimeout:  30,
+		CommandTimeout: 30,
 	})
 	if err == nil {
 		t.Errorf("Expected an error for a fake collector type.")
@@ -46,15 +46,15 @@ func TestMakeCollector(t *testing.T) {
 
 func TestMakeCollector2(t *testing.T) {
 	c, err := MakeCollector(configuration.DeviceConfig{
-		"testdevice",
-		"localhost",
-		"cisco",
-		"user",
-		"pass",
-		22,
-		false,
-		30,
-		30,
+		Name:           "testdevice",
+		Host:           "localhost",
+		Type:           "cisco",
+		User:           "user",
+		Pass:           "pass",
+		Port:           22,
+		Disabled:       false,
+		CustomTimeout:  30,
+		CommandTimeout: 30,
 	})
 	if err != nil {
 		t.Errorf("Making Cisco should not error.")
@@ -65,15 +65,15 @@ func TestMakeCollector2(t *testing.T) {
 	}
 
 	c, err = MakeCollector(configuration.DeviceConfig{
-		"testdevice",
-		"localhost",
-		"fake",
-		"user",
-		"pass",
-		22,
-		false,
-		30,
-		30,
+		Name:           "testdevice",
+		Host:           "localhost",
+		Type:           "cisco",
+		User:           "user",
+		Pass:           "pass",
+		Port:           22,
+		Disabled:       false,
+		CustomTimeout:  30,
+		CommandTimeout: 30,
 	})
 	if err == nil {
 		t.Errorf("Expected an error for a fake collector type.")
