@@ -11,16 +11,20 @@ type devCiscoCsb struct {
 }
 
 func (d devCiscoCsb) Collect() string {
+	s := new(utils.SSHRunner)
+	s.Ciphers = []string{"aes256-cbc", "aes128-cbc"}
 	// Regex matching our config block
 	var csb = regexp.MustCompile(`#[\s\S]*?#`) // This likely doesn't work, untested regex
 	// Commands we need to run
 	cmd := []string{"terminal datadump", "show running-config", "exit"}
 	// Set up SSH
-	s := new(utils.SSHRunner)
 	// Connect
 	s.Connect(d.User, d.Pass, d.Host)
 	// Return our config
-	return s.Gather(cmd, csb)
+	s.StartShell()
+	return s.ShellCmd(cmd, *csb)
+	// s.Gather depends on google/expect which is not cross platform
+	//return s.Gather(cmd, csb)
 }
 
 func makeCiscoCsb(d configuration.DeviceConfig) Collector {

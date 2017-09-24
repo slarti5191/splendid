@@ -1,7 +1,6 @@
 package collectors
 
 import (
-	"fmt"
 	"github.com/slarti5191/splendid/configuration"
 	"github.com/slarti5191/splendid/utils"
 	"regexp"
@@ -15,7 +14,6 @@ type devPfsense struct {
 func (d devPfsense) Collect() string {
 	// Regex matching our config block
 	var pf = regexp.MustCompile(`<pfsense>[\s\S]*?<\/pfsense>`)
-	fmt.Println(pf)
 	// Commands we need to run
 	cmd := []string{"8", "cat /conf/config.xml", "exit", "0"}
 	// Set up SSH
