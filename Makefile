@@ -15,7 +15,10 @@ fmt:
 vet:
 	go vet ./...
 
-test: fmt vet
+lint:
+	go lint ./...
+
+test: fmt vet lint
 	go test -v ./...
 
 run: linux64
