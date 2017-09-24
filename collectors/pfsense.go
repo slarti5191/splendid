@@ -22,7 +22,7 @@ func (d devPfsense) Collect() string {
 	s.Connect(d.User, d.Pass, d.Host)
 	// Return our config
 	s.StartShell()
-	return s.ShellCmd(cmd, *pf)
+	return s.ShellCmd(cmd, pf)
 	// s.Gather depends on google/expect which is not cross platform
 	//return s.Gather(cmd, pf)
 }

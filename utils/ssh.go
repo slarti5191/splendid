@@ -88,7 +88,7 @@ func (s *SSHRunner) StartShell() {
 }
 
 // ShellCmd sends a request to the SSH connection and returns the output.
-func (s *SSHRunner) ShellCmd(cmd []string, re regexp.Regexp) string {
+func (s *SSHRunner) ShellCmd(cmd []string, re *regexp.Regexp) string {
 	var result string
 	if s.shellIn == nil {
 		log.Fatal("Shell not yet initialized.")
@@ -100,7 +100,7 @@ func (s *SSHRunner) ShellCmd(cmd []string, re regexp.Regexp) string {
 		result += <-s.shellOut
 	}
 	// Run shellOut through a regex to pull the config
-	return match(result, &re)
+	return match(result, re)
 }
 
 // match parses input and returns a matching substring

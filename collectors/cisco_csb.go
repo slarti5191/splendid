@@ -22,7 +22,7 @@ func (d devCiscoCsb) Collect() string {
 	s.Connect(d.User, d.Pass, d.Host)
 	// Return our config
 	s.StartShell()
-	return s.ShellCmd(cmd, *csb)
+	return s.ShellCmd(cmd, csb)
 	// s.Gather depends on google/expect which is not cross platform
 	//return s.Gather(cmd, csb)
 }
