@@ -15,9 +15,9 @@ func parseConfigFlags() {
 	flag.Duration("t", defaults.Timeout, "Timeout default in seconds to wait for collection to finish.")
 	flag.Bool("debug", defaults.Debug, "Enable DEBUG flag for development.")
 	flag.Bool("x", defaults.AllowInsecureSSH, "Allow untrusted SSH keys.")
-	flag.String("smtp", defaults.SmtpString, "SMTP connection string.")
+	flag.String("smtp", defaults.SMTPString, "SMTP connection string.")
 	flag.Bool("w", defaults.WebserverEnabled, "Run a web status server.")
-	flag.String("listen", defaults.HttpListen, "Host and port to use for HTTP status server.")
+	flag.String("listen", defaults.HTTPListen, "Host and port to use for HTTP status server.")
 
 	flag.Parse()
 }
@@ -45,11 +45,11 @@ func mergeConfigFlags(config *Config) {
 		case "x":
 			config.AllowInsecureSSH = flagVal.Value.(flag.Getter).Get().(bool)
 		case "smtp":
-			config.SmtpString = flagVal.Value.(flag.Getter).Get().(string)
+			config.SMTPString = flagVal.Value.(flag.Getter).Get().(string)
 		case "w":
 			config.WebserverEnabled = flagVal.Value.(flag.Getter).Get().(bool)
 		case "listen":
-			config.HttpListen = flagVal.Value.(flag.Getter).Get().(string)
+			config.HTTPListen = flagVal.Value.(flag.Getter).Get().(string)
 		// Fail if not defined.
 		default:
 			log.Fatalf("Flag merge not configured for %v", flagVal)

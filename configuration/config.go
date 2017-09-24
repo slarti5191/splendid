@@ -28,13 +28,13 @@ type Config struct {
 
 	// Mail
 	EmailEnabled bool
-	SmtpString   string
+	SMTPString   string
 	ToEmail      string
 	FromEmail    string
 
 	// Webserver
 	WebserverEnabled bool
-	HttpListen       string
+	HTTPListen       string
 
 	// Devices
 	Devices []DeviceConfig

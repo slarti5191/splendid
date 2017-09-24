@@ -28,7 +28,7 @@ func TestMakeCollector(t *testing.T) {
 	c, err = MakeCollector(configuration.DeviceConfig{
 		Name:           "testdevice",
 		Host:           "localhost",
-		Type:           "cisco",
+		Type:           "fake",
 		User:           "user",
 		Pass:           "pass",
 		Port:           22,
@@ -67,7 +67,7 @@ func TestMakeCollector2(t *testing.T) {
 	c, err = MakeCollector(configuration.DeviceConfig{
 		Name:           "testdevice",
 		Host:           "localhost",
-		Type:           "cisco",
+		Type:           "fake",
 		User:           "user",
 		Pass:           "pass",
 		Port:           22,
