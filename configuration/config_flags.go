@@ -15,7 +15,7 @@ func parseConfigFlags() {
 	flag.Duration("t", defaults.Timeout, "Timeout default in seconds to wait for collection to finish.")
 	flag.Bool("debug", defaults.Debug, "Enable DEBUG flag for development.")
 	flag.Bool("x", defaults.AllowInsecureSSH, "Allow untrusted SSH keys.")
-	flag.String("smtp", defaults.SMTPString, "SMTP connection string.")
+	flag.Bool("e", defaults.EmailEnabled, "Enable or disable email when changes found.")
 	flag.Bool("dc", defaults.DisableCollection, "Disable collector processing.")
 	flag.Bool("w", defaults.WebserverEnabled, "Run a web status server.")
 	flag.String("listen", defaults.HTTPListen, "Host and port to use for HTTP status server.")
@@ -47,8 +47,8 @@ func mergeConfigFlags(config *Config) {
 			config.DisableCollection = flagVal.Value.(flag.Getter).Get().(bool)
 		case "x":
 			config.AllowInsecureSSH = flagVal.Value.(flag.Getter).Get().(bool)
-		case "smtp":
-			config.SMTPString = flagVal.Value.(flag.Getter).Get().(string)
+		case "e":
+			config.EmailEnabled = flagVal.Value.(flag.Getter).Get().(bool)
 		case "w":
 			config.WebserverEnabled = flagVal.Value.(flag.Getter).Get().(bool)
 		case "listen":

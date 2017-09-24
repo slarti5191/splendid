@@ -29,9 +29,15 @@ type Config struct {
 
 	// Mail
 	EmailEnabled bool
-	SMTPString   string
-	ToEmail      string
-	FromEmail    string
+	EmailTo      string
+	EmailFrom    string
+	EmailSubject string
+
+	// SMTP Plain Auth
+	SMTPHost string
+	SMTPPort int
+	SMTPUser string
+	SMTPPass string
 
 	// Webserver
 	WebserverEnabled bool
@@ -74,7 +80,11 @@ func getConfigDefaults() *Config {
 		"",
 		"",
 		false,
-		"smtp:port",
+		"",
+		"",
+		"Changes from Splendid!",
+		"smtphost",
+		25,
 		"",
 		"",
 		false,

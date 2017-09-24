@@ -88,10 +88,19 @@ func (s *Splendid) threadCollectors() {
 		waitGroup.Wait()
 		log.Println("> Devices collected. Processing diffs.")
 
-		// TODO: Email the changes.
-		_, err := s.git.GitCommit()
+		// Commit and grab changes.
+		changes, err := s.git.GitCommit()
 		if err != nil {
 			panic(err)
+		}
+
+		// Notify email if something changed.
+		if changes != nil {
+			message := "Diffs to follow.\n"
+			for _, c := range changes {
+				message += c + "\n\n"
+			}
+			utils.SendEmail(s.config, s.config.EmailSubject, message)
 		}
 
 		// Sleep until time for the next check.
