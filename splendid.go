@@ -1,7 +1,6 @@
 package splendid
 
 import (
-	"fmt"
 	"github.com/slarti5191/splendid/collectors"
 	"github.com/slarti5191/splendid/configuration"
 	"github.com/slarti5191/splendid/utils"
@@ -63,11 +62,14 @@ func (s *Splendid) threadCollectors() {
 
 	// Main collector loop.
 	for {
-		fmt.Println("> Running Collector Loop")
+		// Silence if all collectors are disabled.
+		if len(s.cols) > 0 {
+			log.Printf("> Running %v Collector(s)", len(s.cols))
+		}
 
-		// TODO: Ensure the below is running concurrently. Implement max concurrency setting.
 		for _, c := range s.cols {
 			go func(c collectors.Collector) {
+				//log.Printf("Starting [%v]", c.GetName())
 				result := c.Collect()
 				utils.WriteFile(result, c.GetName(), *s.config)
 				log.Printf("Completed [%v] Len = %v", c.GetName(), len(result))

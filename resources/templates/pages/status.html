@@ -1,0 +1,24 @@
+{{ define "title" }}Example Splendid Title{{ end }}
+{{ define "body" }}
+
+<h1>Splendid Status</h1>
+
+<p>Config File: <strong>{{.Config.ConfigFile}}</strong></p>
+<p>Interval: <strong>{{.Config.Interval}}</strong></p>
+<p>Timeout: <strong>{{.Config.Timeout}}</strong></p>
+<p>Concurrency: <strong>{{.Config.Concurrency}}</strong></p>
+
+{{ range $key, $value := .Config.Devices }}
+    <hr>
+
+    <div class="{{if $value.Disabled}}disabled{{end}}">
+        <ul>
+            {{if $value.Disabled}}<li>Disabled: <strong>{{ $value.Disabled }}</strong></li>{{end}}
+            <li>Name: <strong>{{ $value.Name }}</strong></li>
+            <li>Type: <strong>{{ $value.Type }}</strong></li>
+            <li>Host: <strong>{{ $value.Host }}</strong></li>
+        </ul>
+    </div>
+{{ end }}
+
+{{ end }}

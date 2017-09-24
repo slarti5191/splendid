@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ template "title" }}</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+</head>
+<body>
+
+{{ template "body" . }}
+
+<hr>
+
+<em>Splendid has been running for <strong>{{printf "%.4v" .TimeSince}}</strong> seconds.</em>
+
+</body>
+</html>
