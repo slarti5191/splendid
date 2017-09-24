@@ -7,7 +7,8 @@ import (
 // Config holds the general application settings.
 type Config struct {
 	// Debug
-	Debug bool
+	Debug      bool
+	Copyrights bool
 
 	// Config
 	ConfigFile string
@@ -68,6 +69,7 @@ func (d DeviceConfig) GetName() string {
 // getConfigDefaults provides reasonable defaults for Splendid!
 func getConfigDefaults() *Config {
 	return &Config{
+		false,
 		false,
 		"splendid.conf",
 		30,

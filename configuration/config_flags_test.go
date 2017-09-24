@@ -27,6 +27,7 @@ func TestFlagsBasic(t *testing.T) {
 		"-e",
 		"-w",
 		"--listen", "web.example:4444",
+		"--copyrights",
 	}
 	setOSFlagsForTesting(args)
 	parseConfigFlags()
@@ -41,7 +42,7 @@ func TestFlagsBasic(t *testing.T) {
 		found = append(found, flag.Name)
 	})
 	// Flags sorts and calls "Visit" alphabetically.
-	expect := []string{"c", "dc", "e", "i", "listen", "p", "t", "w", "x"}
+	expect := []string{"c", "copyrights", "dc", "e", "i", "listen", "p", "t", "w", "x"}
 	if !reflect.DeepEqual(found, expect) {
 		t.Fatalf("Flags not parsed properly.\nFound: %s\nExpected: %s", found, expect)
 	}
@@ -61,6 +62,7 @@ func TestMergeAllConfigFlags(t *testing.T) {
 		"-e",
 		"-w",
 		"--listen", "web.example:4444",
+		"--copyrights",
 	})
 
 	parseConfigFlags()

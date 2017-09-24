@@ -19,6 +19,7 @@ func parseConfigFlags() {
 	flag.Bool("dc", defaults.DisableCollection, "Disable collector processing.")
 	flag.Bool("w", defaults.WebserverEnabled, "Run a web status server.")
 	flag.String("listen", defaults.HTTPListen, "Host and port to use for HTTP status server.")
+	flag.Bool("copyrights", defaults.Copyrights, "Display copyright licenses of compiled packages.")
 
 	flag.Parse()
 }
@@ -53,6 +54,8 @@ func mergeConfigFlags(config *Config) {
 			config.WebserverEnabled = flagVal.Value.(flag.Getter).Get().(bool)
 		case "listen":
 			config.HTTPListen = flagVal.Value.(flag.Getter).Get().(string)
+		case "copyrights":
+			config.Copyrights = flagVal.Value.(flag.Getter).Get().(bool)
 		// Fail if not defined.
 		default:
 			log.Fatalf("Flag merge not configured for %v", flagVal)

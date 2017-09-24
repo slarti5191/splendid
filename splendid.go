@@ -5,6 +5,7 @@ import (
 	"github.com/slarti5191/splendid/configuration"
 	"github.com/slarti5191/splendid/utils"
 	"github.com/slarti5191/splendid/web"
+	"io/ioutil"
 	"log"
 	"os"
 	"sync"
@@ -25,9 +26,22 @@ type Splendid struct {
 func (s *Splendid) Run() {
 	s.config = configuration.GetConfig()
 
+	// Dump debug info.
 	if s.config.Debug {
 		log.Println("DEBUG ENABLED: Dumping config and exiting.")
 		log.Println(s.config)
+		os.Exit(0)
+	}
+
+	// Dump copyright info.
+	if s.config.Copyrights {
+		log.Println("COPYRIGHT Information")
+		data, err := ioutil.ReadFile("COPYRIGHTS")
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+		log.Println(string(data))
 		os.Exit(0)
 	}
 
