@@ -15,9 +15,16 @@ Features
 Devices Supported
 -----------------
 
-- Cisco
+- Cisco CSB
 - PFSense
+
+ToDo:
+
+- Cisco (Older models.)
 - Comware
+- External
+- Juniper (JunOS)
+- Vyatta
 
 License
 -------
