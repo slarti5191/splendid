@@ -114,7 +114,11 @@ func (s *Splendid) threadCollectors() {
 			for _, c := range changes {
 				message += c + "\n\n"
 			}
-			utils.SendEmail(s.config, s.config.EmailSubject, message)
+			if s.config.EmailEnabled {
+				utils.SendEmail(s.config, s.config.EmailSubject, message)
+			} else {
+				log.Println("Email notification disabled.")
+			}
 		}
 
 		// Sleep until time for the next check.
