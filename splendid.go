@@ -149,7 +149,7 @@ func (s *Splendid) runCollector(c collectors.Collector, waitGroup *sync.WaitGrou
 		failCounts[c]++
 		if failCounts[c] > 2 {
 			// It appears we have a problem. (Email?)
-			log.Fatalf("[%v] Failed three times in a row.", c.GetName())
+			log.Printf("[%v] Failed %v times in a row.", c.GetName(), failCounts[c])
 		}
 	} else {
 		// Ensure reset of fail counts for this collector.
