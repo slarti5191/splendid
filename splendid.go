@@ -68,9 +68,7 @@ func (s *Splendid) Run() {
 	s.threadCollectors()
 }
 
-// threadCollectors iterates through all device configs and runs the collectors.
-func (s *Splendid) threadCollectors() {
-	// Build our collectors.
+func (s *Splendid) buildCollectors() {
 	s.cols = make([]collectors.Collector, 0, len(s.config.Devices))
 	for _, c := range s.config.Devices {
 		if c.Disabled {
@@ -80,14 +78,24 @@ func (s *Splendid) threadCollectors() {
 		}
 		collector, err := collectors.MakeCollector(c)
 		if err != nil {
-			panic(err)
+			log.Printf("Invalid configuration: %v", c.Name)
+			log.Print(err)
+			continue
 		}
 		s.cols = append(s.cols, collector)
 	}
+}
 
-	// If no collectors were built, we have a problem.
+// threadCollectors iterates through all device configs and runs the collectors.
+func (s *Splendid) threadCollectors() {
+	// Build our collectors.
+	s.buildCollectors()
+
+	// If no collectors were built, we do not need to start the loop.
 	if len(s.cols) == 0 {
-		log.Fatal("Must set DisableCollection or pass -dc flag if no collectors are enabled.")
+		log.Println("No collectors properly configured to run.")
+		log.Println("Use -dc flag to DisableCollection to suppress this message.")
+		return
 	}
 
 	// Main collector loop.

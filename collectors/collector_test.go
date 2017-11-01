@@ -82,3 +82,23 @@ func TestMakeCollector2(t *testing.T) {
 		t.Errorf("Expected a nil result for fake collector type.")
 	}
 }
+
+func TestMakeFakeCollector(t *testing.T) {
+	c, err := MakeCollector(configuration.DeviceConfig{
+		Name:           "testdevice",
+		Host:           "localhost",
+		Type:           "fake",
+		User:           "user",
+		Pass:           "pass",
+		Port:           22,
+		Disabled:       false,
+		CustomTimeout:  30,
+		CommandTimeout: 30,
+	})
+	if err == nil {
+		t.Errorf("Expected an error for a fake collector type.")
+	}
+	if c != nil {
+		t.Errorf("Expected a nil result for fake collector type.")
+	}
+}

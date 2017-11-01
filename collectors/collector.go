@@ -1,7 +1,7 @@
 package collectors
 
 import (
-	"errors"
+	"fmt"
 	"github.com/slarti5191/splendid/configuration"
 )
 
@@ -24,6 +24,6 @@ func MakeCollector(d configuration.DeviceConfig) (Collector, error) {
 	case "pfsense":
 		return makePfsense(d), nil
 	default:
-		return nil, errors.New("unrecognized collector type")
+		return nil, fmt.Errorf("unrecognized collector type: %v", d.Type)
 	}
 }
