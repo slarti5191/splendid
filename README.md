@@ -1,3 +1,13 @@
+As you will no doubt be aware, the plans for development of this project require a complete rewrite.  And regrettably you have arrived at the wrong repository.  This repository is one of those scheduled for demolition. The process will take approximately one of your cyber clicks right [here](https://github.com/aja-video/contra)
+=====================================================
+Splendid has been scrapped in favor of a complete rewrite, now known as Contra.
+
+This repo is not in fact scheduled for demolition, however future updates are unlikely.
+
+Check out Contra [here](https://github.com/aja-video/contra)
+
+I don't know, apathetic bloody project, I've no sympathy at all.
+
 Splendid - Configuration Tracking for Network Devices
 =====================================================
 
